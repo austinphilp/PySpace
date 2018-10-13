@@ -1,1 +1,5 @@
-class Ship(MobileBody):
+from body import Body
+
+
+class Ship(Body):
+    pass
