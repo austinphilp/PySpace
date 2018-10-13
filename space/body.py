@@ -5,49 +5,47 @@ from vectors import Vector
 
 
 class Body(object):
-    def __init__(self, current_vector, point, yaw, roll, pitch):
+    def __init__(self, current_vector, point, mass, yaw, roll, pitch):
         self.position = point
-        self._yaw = yaw
-        self._roll = roll
-        self._pitch = pitch
+        self._yaw_degrees = yaw
+        self._roll_degrees = roll
+        self._pitch_degrees = pitch
         self._accelleration_vectors = []
 
     def get_yaw(self, unit_type):
         if unit_type == RADIANS:
-            return self._yaw * DEGREES_TO_RADIANS
+            return self._yaw_degrees * DEGREES_TO_RADIANS
         else:
-            return self._yaw
+            return self._yaw_degrees
 
     def get_pitch(self, unit_type):
         if unit_type == RADIANS:
-            return self._pitch * DEGREES_TO_RADIANS
+            return self._pitch_degrees * DEGREES_TO_RADIANS
         else:
-            return self._pitch
+            return self._pitch_degrees
 
     def get_roll(self, unit_type):
         if unit_type == RADIANS:
-            return self._roll * DEGREES_TO_RADIANS
+            return self._roll_degrees * DEGREES_TO_RADIANS
         else:
-            return self._roll
+            return self._roll_degrees
 
-    def accellerate(self, direction, acceleration):
+    def _create_accelleration_vector(
+            self,
+            direction,
+            acceleration,
+            roll=None,
+            pitch=None,
+            yaw=None):
         vector = Vector.from_list(
-            [x * direction for x in DIRECTIONAL_VECTORS[direction]]
+            [x * acceleration for x in DIRECTIONAL_VECTORS[direction]]
         )
         # Rotate by Roll
-        vector = vector.rotate(self.get_roll(RADIANS), (1, 0, 0))
+        vector = vector.rotate(roll or self.get_roll(RADIANS), (1, 0, 0))
         # Rotate by Pitch
-        vector = vector.rotate(self.get_roll(RADIANS), (0, 1, 0))
+        vector = vector.rotate(pitch or self.get_pitch(RADIANS), (0, 1, 0))
         # Rotate by Yaw
-        vector = vector.rotate(self.get_roll(RADIANS), (0, 0, 1))
+        vector = vector.rotate(yaw or self.get_yaw(RADIANS), (0, 0, 1))
 
         return vector
 
-    def roll(self, acceleration):
-        self.roll += acceleration
-
-    def yaw(self, acceleration):
-        self.yaw += acceleration
-
-    def pitch(self, acceleration):
-        self.pitch += acceleration

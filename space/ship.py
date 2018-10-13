@@ -1,2 +1,1 @@
 class Ship(MobileBody):
-    pass
