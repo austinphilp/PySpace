@@ -1,8 +1,8 @@
 from abc import ABC
 from decimal import Decimal
 
-from utils.sanitization import sanitize_integrity
-from utils.sanitization import sanitize_throttle
+from space.utils.sanitization import sanitize_integrity
+from space.utils.sanitization import sanitize_throttle
 
 
 class BaseComponent(ABC):

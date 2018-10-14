@@ -1,8 +1,8 @@
 from vectors import Point
 from vectors import Vector
 
-from constants.math import DEGREES_TO_RADIANS
-from constants.math import RADIANS
+from space.constants.math import DEGREES_TO_RADIANS
+from space.constants.math import RADIANS
 
 
 class Body(object):

@@ -1,4 +1,4 @@
-from components.base import MovementComponent
+from space.components.base import MovementComponent
 
 
 class ReactionWheel(MovementComponent):

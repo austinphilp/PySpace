@@ -1,7 +1,7 @@
 from vectors import Point
 
-from constants import directions
-from tests.assertions import _test_acceleration
+from space.constants import directions
+from space.tests.assertions import _test_acceleration
 
 
 def test_overhead_acceleration_default_orientation():
