@@ -1,4 +1,9 @@
 from vectors import Vector
+
+
+CLOCKWISE = "CW"
+COUNTER_CLOCKWISE = "CCW"
+
 STARBOARD = "starboard"
 PORT = "port"
 FORWARD = "forward"

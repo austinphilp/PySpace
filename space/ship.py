@@ -17,8 +17,8 @@ class Ship(Body):
             side: kwargs.pop("{}_panel".format(side), ShipPanel(side=side))
             for side in DIRECTIONS
         }
-        for panel in self.panels.values():
-            panel.attached_body = self
+        for obj in self.reaction_wheels + list(self.panels.values()):
+            obj.attached_body = self
         super(Ship, self).__init__(*args, **kwargs)
 
     @property
@@ -26,14 +26,26 @@ class Ship(Body):
         return [thruster for panel in self.panels.values()
                 for thruster in panel.thrusters]
 
-    @property
-    def active_thrusters(self):
-        return [c for c in self.thrusters if c.is_active]
-
     def apply_acceleration_vectors(self):
         self._apply_thrust()
+        self._apply_rotation()
         self.position += self.current_vector
 
+    def _apply_rotation(self):
+        self._update_rotational_speed()
+        self.yaw_degrees += self.yaw_speed
+        self.roll_degrees += self.roll_speed
+        self.pitch_degrees += self.pitch_speed
+
+    def _update_rotational_speed(self):
+        for wheel in self.reaction_wheels:
+            if wheel.is_active:
+                speed_property = "{}_speed".format(wheel.axis)
+                rotational_speed = getattr(self, speed_property)
+                rotational_speed += wheel.current_acceleration
+                setattr(self, speed_property, rotational_speed)
+
     def _apply_thrust(self):
-        for thruster in self.active_thrusters:
-            self.current_vector += thruster.acceleration_vector
+        for thruster in [t for t in self.thrusters]:
+            if thruster.is_active:
+                self.current_vector += thruster.acceleration_vector
