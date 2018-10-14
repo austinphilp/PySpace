@@ -2,7 +2,7 @@ from components.base import MovementComponent
 
 
 class ReactionWheel(MovementComponent):
-    def __init__(self, axis, max_acceleration, *args, **kwargs):
+    def __init__(self, axis, *args, **kwargs):
         self.axis = axis
         super(ReactionWheel, self).__init__(*args, **kwargs)
 
