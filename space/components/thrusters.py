@@ -1,7 +1,7 @@
-from components.base import MovementComponent
-from constants.directions import COUNTER_DIRECTIONS
-from constants.directions import DIRECTIONAL_VECTORS
-from utils.vectors import round_point
+from space.components.base import MovementComponent
+from space.constants.directions import COUNTER_DIRECTIONS
+from space.constants.directions import DIRECTIONAL_VECTORS
+from space.utils.vectors import round_point
 
 
 class Thruster(MovementComponent):
