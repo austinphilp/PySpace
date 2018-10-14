@@ -1,5 +1,5 @@
-from body import Body
-from constants.directions import DIRECTIONS
+from space.body import Body
+from space.constants.directions import DIRECTIONS
 
 
 class ShipPanel(object):

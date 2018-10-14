@@ -1,9 +1,9 @@
 from decimal import Decimal
 
-from components import Thruster
-from constants import directions
-from ship import Ship
-from ship import ShipPanel
+from space.components import Thruster
+from space.constants import directions
+from space.ship import Ship
+from space.ship import ShipPanel
 
 
 def _test_acceleration(direction, expected_position, orientation={}):
