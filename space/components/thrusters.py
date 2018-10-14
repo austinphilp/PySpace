@@ -1,11 +1,13 @@
 from components.base import MovementComponent
+from constants.directions import COUNTER_DIRECTIONS
 from constants.directions import DIRECTIONAL_VECTORS
+from utils.vectors import round_point
 
 
 class Thruster(MovementComponent):
-    def __init__(self, direction_of_thrust, *args, **kwargs):
-        self.direction = direction_of_thrust
-        super(Thruster, self).__init__(*args, **kwargs)
+    @property
+    def direction(self):
+        return COUNTER_DIRECTIONS[self.attached_panel.side]
 
     @property
     def _directional_vector(self):
@@ -19,14 +21,24 @@ class Thruster(MovementComponent):
 
         vector = DIRECTIONAL_VECTORS[self.direction]
         # Rotate by Roll
-        vector = vector.rotate(self.attached_body.get_roll(), (1, 0, 0))
+        vector = round_point(vector.rotate(self.get_roll(), (1, 0, 0)))
         # Rotate by Pitch
-        vector = vector.rotate(self.attached_body.get_pitch(), (0, 1, 0))
+        vector = round_point(vector.rotate(self.get_pitch(), (0, 1, 0)))
         # Rotate by Yaw
-        vector = vector.rotate(self.attached_body.get_yaw(), (0, 0, 1))
+        vector = round_point(vector.rotate(self.get_yaw(), (0, 0, 1)))
+        return vector
 
-    def apply_acceleration(self):
-        acceleration_vector = self._directional_vector.multiply(
-            self.current_acceleration
+    @property
+    def acceleration_vector(self):
+        return round_point(
+            self._directional_vector.multiply(self.current_acceleration)
         )
-        self.attached_body.add_acceleration_vector(acceleration_vector)
+
+    def get_roll(self, *args, **kwargs):
+        return self.attached_panel.attached_body.get_roll(*args, **kwargs)
+
+    def get_yaw(self, *args, **kwargs):
+        return self.attached_panel.attached_body.get_yaw(*args, **kwargs)
+
+    def get_pitch(self, *args, **kwargs):
+        return self.attached_panel.attached_body.get_pitch(*args, **kwargs)

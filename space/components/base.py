@@ -1,5 +1,4 @@
 from abc import ABC
-from abc import abstractmethod
 from decimal import Decimal
 
 from utils.sanitization import sanitize_integrity
@@ -8,7 +7,7 @@ from utils.sanitization import sanitize_throttle
 
 class BaseComponent(ABC):
     def __init__(self, *args, **kwargs):
-        self._integrity = Decimal('1.0', decimal_places=4, max_digits=5)
+        self._integrity = Decimal('1.0')
 
     @property
     def is_active(self):
@@ -37,8 +36,8 @@ class BaseComponent(ABC):
 
 class PoweredComponent(BaseComponent):
     def __init__(self, *args, **kwargs):
+        BaseComponent.__init__(self, *args, **kwargs)
         self.powered_on = kwargs.get('powered_on', True)
-        return super(PoweredComponent, self).__init__(*args, **kwargs)
 
     @property
     def is_active(self):
@@ -46,10 +45,10 @@ class PoweredComponent(BaseComponent):
 
 
 class MovementComponent(PoweredComponent):
-    def __init__(self, *args, **kwargs):
-        self.initial_max_acceleration = kwargs.pop('max_acceleration')
+    def __init__(self, max_acceleration, *args, **kwargs):
+        PoweredComponent.__init__(self, *args, **kwargs)
+        self.initial_max_acceleration = max_acceleration
         self._throttle = 0
-        return super(MovementComponent, self).__init__(*args, **kwargs)
 
     @property
     def throttle(self):
@@ -69,8 +68,4 @@ class MovementComponent(PoweredComponent):
 
     @property
     def current_acceleration(self):
-        return self.max_acceleration * self.throttle
-
-    @abstractmethod
-    def apply_acceleration(self):
-        pass
+        return Decimal(self.max_acceleration * self.throttle)
