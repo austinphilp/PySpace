@@ -8,7 +8,7 @@ class ReactionWheel(MovementComponent):
         MovementComponent.__init__(self, *args, **kwargs)
         self._axis = axis
         self.rotation = rotation
-        self.mass = self.initial_max_acceleration * KG_PER_RW_ACC
+        self.mass = self.initial_max_force * KG_PER_RW_ACC
 
     @property
     def axis(self):
@@ -16,5 +16,5 @@ class ReactionWheel(MovementComponent):
 
     @property
     def current_acceleration(self):
-        acceleration = super(ReactionWheel, self).current_acceleration
-        return acceleration if self.rotation == CLOCKWISE else -acceleration
+        force = super(ReactionWheel, self).current_force
+        return force if self.rotation == CLOCKWISE else -force

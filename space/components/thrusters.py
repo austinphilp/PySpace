@@ -8,7 +8,7 @@ from space.utils.vectors import round_point
 class Thruster(MovementComponent):
     def __init__(self, *args, **kwargs):
         MovementComponent.__init__(self, *args, **kwargs)
-        self.mass = self.initial_max_acceleration * KG_PER_THRUSTER_ACC
+        self.mass = self.initial_max_force * KG_PER_THRUSTER_ACC
 
     @property
     def direction(self):
@@ -38,6 +38,10 @@ class Thruster(MovementComponent):
         return round_point(
             self._directional_vector.multiply(self.current_acceleration)
         )
+
+    @property
+    def current_acceleration(self):
+        return self.current_force
 
     def get_roll(self, *args, **kwargs):
         return self.attached_panel.attached_body.get_roll(*args, **kwargs)

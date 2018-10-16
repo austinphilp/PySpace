@@ -7,7 +7,7 @@ from space.ship import ShipPanel
 
 
 def _test_acceleration(direction, expected_position, orientation={}):
-    thruster = Thruster(max_acceleration=10.0)
+    thruster = Thruster(max_force=10.0)
     panel = ShipPanel(
         side=directions.COUNTER_DIRECTIONS[direction],
         thrusters=[thruster]
@@ -33,14 +33,14 @@ def _test_acceleration(direction, expected_position, orientation={}):
 def _test_rotation(direction, axis, expected_orientation={}):
     ship = Ship(
         reaction_wheels=[
-            ReactionWheel(axis=axis, rotation=direction, max_acceleration=15)
+            ReactionWheel(axis=axis, rotation=direction, max_force=15)
         ]
     )
     for reaction_wheel in ship.reaction_wheels:
         reaction_wheel.throttle = 0.5
 
     ship.apply_acceleration_vectors()
-    print("""yaw: {ship.get_yaw(math.DEGREES)}
+    print(F"""yaw: {ship.get_yaw(math.DEGREES)}
         pitch: {ship.get_pitch(math.DEGREES)}
         roll: {ship.get_roll(math.DEGREES)}""")
     assert (

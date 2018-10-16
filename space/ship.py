@@ -22,7 +22,7 @@ class Ship(Body):
         for obj in self.reaction_wheels + list(self.panels.values()):
             obj.attached_body = self
 
-        self.mass = (
+        self.mass += (
             sum(r.mass for r in self.reaction_wheels) +
             sum(p.mass for p in self.panels.values())
         )

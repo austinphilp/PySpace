@@ -8,19 +8,19 @@ from space.ship import ShipPanel
 
 
 def test_thruster_mass_calculation():
-    mass = Thruster(max_acceleration=10).mass
+    mass = Thruster(max_force=10).mass
     assert mass == 10 * KG_PER_THRUSTER_ACC
 
 
 def test_reaction_wheel_mass_calculation():
-    mass = ReactionWheel(max_acceleration=10, axis=directions.ROLL).mass
+    mass = ReactionWheel(max_force=10, axis=directions.ROLL).mass
     assert mass == 10 * KG_PER_RW_ACC
 
 
 def test_ship_mass_calculation():
-    thruster = Thruster(max_acceleration=10)
+    thruster = Thruster(max_force=10)
     ship = Ship(**{
-        "reaction_wheels": [ReactionWheel(max_acceleration=10, axis=directions.ROLL)],
+        "reaction_wheels": [ReactionWheel(max_force=10, axis=directions.ROLL)],
         **{
             F"{side}_panel": ShipPanel(side=side, thrusters=[thruster])
             for side in directions.DIRECTIONS
