@@ -2,3 +2,5 @@ RADIANS = "radians"
 DEGREES = "degrees"
 
 DEGREES_TO_RADIANS = 0.0174533
+
+PRECISION = 5
