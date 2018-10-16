@@ -1,12 +1,14 @@
 from space.components.base import MovementComponent
 from space.constants.directions import CLOCKWISE
+from space.constants.ratios import KG_PER_RW_ACC
 
 
 class ReactionWheel(MovementComponent):
     def __init__(self, axis, rotation=CLOCKWISE, *args, **kwargs):
+        MovementComponent.__init__(self, *args, **kwargs)
         self._axis = axis
         self.rotation = rotation
-        super(ReactionWheel, self).__init__(*args, **kwargs)
+        self.mass = self.initial_max_acceleration * KG_PER_RW_ACC
 
     @property
     def axis(self):

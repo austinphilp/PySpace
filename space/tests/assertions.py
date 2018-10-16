@@ -13,7 +13,7 @@ def _test_acceleration(direction, expected_position, orientation={}):
         thrusters=[thruster]
     )
     ship = Ship(**{
-        "{}_panel".format(direction): panel,
+        F"{direction}_panel": panel,
         directions.YAW: orientation.get(directions.YAW, 0),
         directions.ROLL: orientation.get(directions.ROLL, 0),
         directions.PITCH: orientation.get(directions.PITCH, 0),
@@ -40,11 +40,9 @@ def _test_rotation(direction, axis, expected_orientation={}):
         reaction_wheel.throttle = 0.5
 
     ship.apply_acceleration_vectors()
-    print("yaw: {}\npitch: {}\nroll: {}".format(
-        ship.get_yaw(math.DEGREES),
-        ship.get_pitch(math.DEGREES),
-        ship.get_roll(math.DEGREES)
-    ))
+    print("""yaw: {ship.get_yaw(math.DEGREES)}
+        pitch: {ship.get_pitch(math.DEGREES)}
+        roll: {ship.get_roll(math.DEGREES)}""")
     assert (
         ship.get_yaw(math.DEGREES) ==
         expected_orientation.get(directions.YAW, 0)
