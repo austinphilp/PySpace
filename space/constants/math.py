@@ -1,7 +1,4 @@
-from decimal import Decimal
-
-
 RADIANS = "radians"
 DEGREES = "degrees"
 
-DEGREES_TO_RADIANS = Decimal('0.0174533')
+DEGREES_TO_RADIANS = 0.0174533

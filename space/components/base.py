@@ -1,5 +1,4 @@
 from abc import ABC
-from decimal import Decimal
 
 from space.utils.sanitization import sanitize_integrity
 from space.utils.sanitization import sanitize_throttle
@@ -7,7 +6,7 @@ from space.utils.sanitization import sanitize_throttle
 
 class BaseComponent(ABC):
     def __init__(self, *args, **kwargs):
-        self._integrity = Decimal('1.0')
+        self._integrity = 1.0
 
     @property
     def is_active(self):
@@ -60,7 +59,7 @@ class MovementComponent(PoweredComponent):
 
     @property
     def degredation_rate(self):
-        return max(Decimal(0), self._throttle-1) / 100
+        return max(0, self._throttle-1) / 100
 
     @property
     def max_acceleration(self):
@@ -68,4 +67,4 @@ class MovementComponent(PoweredComponent):
 
     @property
     def current_acceleration(self):
-        return Decimal(self.max_acceleration * self.throttle)
+        return self.max_acceleration * self.throttle

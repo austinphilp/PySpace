@@ -7,7 +7,6 @@ pyspace_server.egg-info/top_level.txt
 space/__init__.py
 space/body.py
 space/ship.py
-space/test.py
 space/components/__init__.py
 space/components/base.py
 space/components/reaction_wheels.py

@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from space.components import ReactionWheel
 from space.components import Thruster
 from space.constants import directions
@@ -9,7 +7,7 @@ from space.ship import ShipPanel
 
 
 def _test_acceleration(direction, expected_position, orientation={}):
-    thruster = Thruster(max_acceleration=Decimal(10))
+    thruster = Thruster(max_acceleration=10.0)
     panel = ShipPanel(
         side=directions.COUNTER_DIRECTIONS[direction],
         thrusters=[thruster]
@@ -24,7 +22,7 @@ def _test_acceleration(direction, expected_position, orientation={}):
         t for t in ship.thrusters if t.direction == direction
     ]
     for thruster in directional_thrusters:
-        thruster.throttle = Decimal('0.5')
+        thruster.throttle = 0.5
 
     ship.apply_acceleration_vectors()
     print(ship.position)
@@ -39,7 +37,7 @@ def _test_rotation(direction, axis, expected_orientation={}):
         ]
     )
     for reaction_wheel in ship.reaction_wheels:
-        reaction_wheel.throttle = Decimal('0.5')
+        reaction_wheel.throttle = 0.5
 
     ship.apply_acceleration_vectors()
     print("yaw: {}\npitch: {}\nroll: {}".format(
