@@ -44,13 +44,6 @@ class Thruster(MovementComponent):
         )
 
     @property
-    def power_adjusted_current_force(self):
-        return (
-            self.current_force *
-            self.attached_body.overall_performance_modifier
-        )
-
-    @property
     def current_acceleration(self):
         return self.power_adjusted_current_force/self.attached_body.mass
 
