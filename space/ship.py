@@ -32,6 +32,9 @@ class Ship(Body):
         return [thruster for panel in self.panels.values()
                 for thruster in panel.thrusters]
 
+    def get_thrusters_by_orientation(self, orientation):
+        return [t for t in self.thrusters if t.direction == orientation]
+
     def apply_acceleration_vectors(self):
         self._apply_thrust()
         self._apply_rotation()

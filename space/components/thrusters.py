@@ -41,7 +41,7 @@ class Thruster(MovementComponent):
 
     @property
     def current_acceleration(self):
-        return self.current_force
+        return self.current_force/self.attached_panel.attached_body.mass
 
     def get_roll(self, *args, **kwargs):
         return self.attached_panel.attached_body.get_roll(*args, **kwargs)

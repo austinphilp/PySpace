@@ -17,4 +17,5 @@ class ReactionWheel(MovementComponent):
     @property
     def current_acceleration(self):
         force = super(ReactionWheel, self).current_force
+        force /= self.attached_body.mass
         return force if self.rotation == CLOCKWISE else -force

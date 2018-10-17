@@ -17,7 +17,8 @@ def test_overhead_acceleration_yaw_no_change():
             directions.YAW: 90,
             directions.ROLL: 0,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -33,7 +34,8 @@ def test_forward_acceleration_90_yaw():
             directions.YAW: 90,
             directions.ROLL: 0,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -49,7 +51,8 @@ def test_forward_acceleration_45_yaw():
             directions.YAW: 45,
             directions.ROLL: 0,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -66,7 +69,8 @@ def test_forward_acceleration_roll_no_change():
             directions.YAW: 0,
             directions.ROLL: 90,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -82,7 +86,8 @@ def test_port_acceleration_90_roll():
             directions.YAW: 0,
             directions.ROLL: 90,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -98,7 +103,8 @@ def test_port_acceleration_45_roll():
             directions.YAW: 0,
             directions.ROLL: 45,
             directions.PITCH: 0
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -115,7 +121,8 @@ def test_overhead_acceleration_pitch_no_change():
             directions.YAW: 0,
             directions.ROLL: 0,
             directions.PITCH: 90
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -131,7 +138,8 @@ def test_forward_acceleration_90_pitch():
             directions.YAW: 0,
             directions.ROLL: 0,
             directions.PITCH: 90
-        }
+        },
+        keep_mass=False
     )
 
 
@@ -147,5 +155,6 @@ def test_forward_acceleration_45_pitch():
             directions.YAW: 0,
             directions.ROLL: 0,
             directions.PITCH: 45
-        }
+        },
+        keep_mass=False
     )
