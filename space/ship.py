@@ -15,6 +15,7 @@ class Ship(Body):
     def __init__(self, *args, **kwargs):
         super(Ship, self).__init__(*args, **kwargs)
         self.reaction_wheels = kwargs.pop('reaction_wheels', [])
+        self.reactors = kwargs.pop('reactors', [])
         self.panels = {
             side: kwargs.pop(F"{side}_panel", ShipPanel(side=side))
             for side in DIRECTIONS
@@ -36,6 +37,16 @@ class Ship(Body):
             sum(r.mass for r in self.reaction_wheels) +
             sum(p.mass for p in self.panels.values())
         )
+
+    @property
+    def power_available(self):
+        return sum(r.current_output for r in self.reactors)
+
+    @property
+    def power_consumption(self):
+        thruster_consumption = sum(t.power_consumption for t in self.thrusters)
+        wheel_consumption = sum(r.power_consumption for r in self.reaction_wheels)
+        return thruster_consumption + wheel_consumption
 
     @property
     def thrusters(self):
