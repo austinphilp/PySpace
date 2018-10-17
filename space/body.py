@@ -5,6 +5,13 @@ from space.constants.math import DEGREES_TO_RADIANS
 from space.constants.math import RADIANS
 
 
+class DimensionsMixin(object):
+    def __init__(self, *args, **kwargs):
+        self.width = kwargs.pop('width', 0)
+        self.height = kwargs.pop('height', 0)
+        self.depth = kwargs.pop('depth', 0)
+
+
 class Body(object):
     def __init__(self, *args, **kwargs):
         self.position = kwargs.pop('position', Point(0, 0, 0))

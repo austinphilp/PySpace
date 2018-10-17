@@ -21,8 +21,18 @@ class Ship(Body):
         }
         for obj in self.reaction_wheels + list(self.panels.values()):
             obj.attached_body = self
+        self.mass += self._calculate_mass()
+        self.height, self.width, self.depth = self._calculate_dimensions()
 
-        self.mass += (
+    def _calculate_dimensions(self):
+        # For now all ships will simply be squares
+        width = self.mass/1000
+        height = width
+        depth = width
+        return height, width, depth
+
+    def _calculate_mass(self):
+        return (
             sum(r.mass for r in self.reaction_wheels) +
             sum(p.mass for p in self.panels.values())
         )
