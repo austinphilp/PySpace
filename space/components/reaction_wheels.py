@@ -14,6 +14,7 @@ class ReactionWheel(MovementComponent):
     def axis(self):
         return self._axis
 
+
     @property
     def current_acceleration(self):
         force = super(ReactionWheel, self).current_force

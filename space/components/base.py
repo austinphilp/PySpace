@@ -39,6 +39,17 @@ class PoweredComponent(BaseComponent):
         self.powered_on = kwargs.get('powered_on', True)
 
     @property
+    def power_adjusted_current_force(self):
+        return (
+            self.current_force *
+            self.attached_body.overall_performance_modifier
+        )
+
+    @property
+    def power_consumption(self):
+        return 0
+
+    @property
     def is_active(self):
         return super(PoweredComponent, self).is_active and self.powered_on
 
@@ -59,7 +70,10 @@ class MovementComponent(PoweredComponent):
 
     @property
     def degredation_rate(self):
-        return max(0, self._throttle-1) / 100
+        return max(0, self._throttle-1) / 5000
+
+    def apply_degredation(self):
+        self.integrity = round(max(0, self.integrity-self.degredation_rate), 5)
 
     @property
     def max_force(self):
@@ -68,3 +82,7 @@ class MovementComponent(PoweredComponent):
     @property
     def current_force(self):
         return self.max_force * self.throttle
+
+    @property
+    def power_consumption(self):
+        return self.current_force
