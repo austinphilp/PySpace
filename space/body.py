@@ -5,14 +5,24 @@ from space.constants.math import DEGREES_TO_RADIANS
 from space.constants.math import RADIANS
 
 
+class DimensionsMixin(object):
+    def __init__(self, *args, **kwargs):
+        self.width = kwargs.pop('width', 0)
+        self.height = kwargs.pop('height', 0)
+        self.depth = kwargs.pop('depth', 0)
+
+
 class Body(object):
     def __init__(self, *args, **kwargs):
         self.position = kwargs.pop('position', Point(0, 0, 0))
         self.current_vector = kwargs.pop('current_vector', Vector(0, 0, 0))
         self.mass = kwargs.pop('mass', 0)
-        self._yaw_degrees = kwargs.pop('yaw', 0)
-        self._roll_degrees = kwargs.pop('roll', 0)
-        self._pitch_degrees = kwargs.pop('pitch', 0)
+        self.yaw_degrees = kwargs.pop('yaw', 0)
+        self.yaw_speed = kwargs.pop('yaw_speed', 0)
+        self.roll_degrees = kwargs.pop('roll', 0)
+        self.roll_speed = kwargs.pop('roll_speed', 0)
+        self.pitch_degrees = kwargs.pop('pitch', 0)
+        self.pitch_speed = kwargs.pop('pitch_speed', 0)
         self._acceleration_vectors = []
 
     def add_acceleration_vector(self, vector):
@@ -26,18 +36,18 @@ class Body(object):
 
     def get_yaw(self, unit_type=RADIANS):
         if unit_type == RADIANS:
-            return self._yaw_degrees * DEGREES_TO_RADIANS
+            return self.yaw_degrees * DEGREES_TO_RADIANS
         else:
-            return self._yaw_degrees
+            return self.yaw_degrees
 
     def get_pitch(self, unit_type=RADIANS):
         if unit_type == RADIANS:
-            return self._pitch_degrees * DEGREES_TO_RADIANS
+            return self.pitch_degrees * DEGREES_TO_RADIANS
         else:
-            return self._pitch_degrees
+            return self.pitch_degrees
 
     def get_roll(self, unit_type=RADIANS):
         if unit_type == RADIANS:
-            return self._roll_degrees * DEGREES_TO_RADIANS
+            return self.roll_degrees * DEGREES_TO_RADIANS
         else:
-            return self._roll_degrees
+            return self.roll_degrees

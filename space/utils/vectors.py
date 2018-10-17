@@ -1,5 +1,4 @@
-from decimal import Decimal
-from decimal import ROUND_HALF_UP
+from space.constants.math import PRECISION
 from vectors import Vector
 
 
@@ -8,7 +7,7 @@ def apply_acceleration_to_vector(self, vector, acceleration):
 
 
 def round_point(point):
-    point.x = point.x.quantize(Decimal('1.00'), rounding=ROUND_HALF_UP)
-    point.y = point.y.quantize(Decimal('1.00'), rounding=ROUND_HALF_UP)
-    point.z = point.z.quantize(Decimal('1.00'), rounding=ROUND_HALF_UP)
+    point.x = round(point.x, PRECISION)
+    point.y = round(point.y, PRECISION)
+    point.z = round(point.z, PRECISION)
     return point

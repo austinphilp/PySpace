@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html)
+# [0.0.3] 
+### Added
+ - Dimensions and mass, which now factor into thrust acceleration
+ - Fstrings in place of str.format
+
+### Removed
+ - Decimal implementation, for now we will use floats, and eventually we will migrate to a more precise float representation
 
 # [0.0.1] 
 ### Added
