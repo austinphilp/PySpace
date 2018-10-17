@@ -33,10 +33,10 @@ class Ship(Body):
         return height, width, depth
 
     def _calculate_mass(self):
-        return (
-            sum(r.mass for r in self.reaction_wheels) +
-            sum(p.mass for p in self.panels.values())
-        )
+        components = self.reaction_wheels + \
+                     self.reactors + \
+                     list(self.panels.values())
+        return sum(c.mass for c in components)
 
     @property
     def power_available(self):
@@ -48,6 +48,12 @@ class Ship(Body):
         wheel_consumption = sum(r.power_consumption for r in self.reaction_wheels)
         return thruster_consumption + wheel_consumption
 
+    @property
+    def overall_performance_modifier(self):
+        if self.power_available == 0:
+            return self.power_available
+        return min(1, self.power_available/self.power_consumption)
+    
     @property
     def thrusters(self):
         return [thruster for panel in self.panels.values()
