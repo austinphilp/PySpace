@@ -62,8 +62,10 @@ class Ship(Body):
                 rotational_speed = getattr(self, F"{wheel.axis}_speed")
                 rotational_speed += wheel.current_acceleration
                 setattr(self, F"{wheel.axis}_speed", rotational_speed)
+                wheel.apply_degredation()
 
     def _apply_thrust(self):
         for thruster in [t for t in self.thrusters]:
             if thruster.is_active:
                 self.current_vector += thruster.acceleration_vector
+                thruster.apply_degredation()

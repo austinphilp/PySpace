@@ -59,7 +59,10 @@ class MovementComponent(PoweredComponent):
 
     @property
     def degredation_rate(self):
-        return max(0, self._throttle-1) / 100
+        return max(0, self._throttle-1) / 5000
+
+    def apply_degredation(self):
+        self.integrity = round(max(0, self.integrity-self.degredation_rate), 5)
 
     @property
     def max_force(self):
