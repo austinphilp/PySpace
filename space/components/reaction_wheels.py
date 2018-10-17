@@ -15,6 +15,13 @@ class ReactionWheel(MovementComponent):
         return self._axis
 
     @property
+    def power_adjusted_current_force(self):
+        return (
+            self.current_force *
+            self.attached_body.overall_performance_degredation
+        )
+
+    @property
     def current_acceleration(self):
         force = super(ReactionWheel, self).current_force
         force /= self.attached_body.mass
