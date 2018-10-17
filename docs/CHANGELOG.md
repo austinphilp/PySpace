@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 # [unreleased]
 ## Added
  - Degredation to thrusters and reactions wheels, which applies when more than 100% thrust is set
+ - Reactors, which provide powers to ships, Each component consumes power, when the power capacity of a ship is overloaded, the performance of its powered components will degrade
 # [0.0.4] 
 ### Removed
  - Egg info files

@@ -34,6 +34,10 @@ class Thruster(MovementComponent):
         return vector
 
     @property
+    def attached_body(self):
+        return self.attached_panel.attached_body
+
+    @property
     def acceleration_vector(self):
         return round_point(
             self._directional_vector.multiply(self.current_acceleration)
@@ -41,7 +45,7 @@ class Thruster(MovementComponent):
 
     @property
     def current_acceleration(self):
-        return self.current_force/self.attached_panel.attached_body.mass
+        return self.power_adjusted_current_force/self.attached_body.mass
 
     def get_roll(self, *args, **kwargs):
         return self.attached_panel.attached_body.get_roll(*args, **kwargs)

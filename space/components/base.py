@@ -39,6 +39,17 @@ class PoweredComponent(BaseComponent):
         self.powered_on = kwargs.get('powered_on', True)
 
     @property
+    def power_adjusted_current_force(self):
+        return (
+            self.current_force *
+            self.attached_body.overall_performance_modifier
+        )
+
+    @property
+    def power_consumption(self):
+        return 0
+
+    @property
     def is_active(self):
         return super(PoweredComponent, self).is_active and self.powered_on
 
@@ -71,3 +82,7 @@ class MovementComponent(PoweredComponent):
     @property
     def current_force(self):
         return self.max_force * self.throttle
+
+    @property
+    def power_consumption(self):
+        return self.current_force

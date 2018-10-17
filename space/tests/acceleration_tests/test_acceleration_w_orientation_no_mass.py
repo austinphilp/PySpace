@@ -11,7 +11,7 @@ def test_overhead_acceleration_yaw_no_change():
         expected_position=Point(
             0.00,
             0.00,
-            5.00,
+            10.00,
         ),
         orientation={
             directions.YAW: 90,
@@ -27,7 +27,7 @@ def test_forward_acceleration_90_yaw():
         direction=directions.FORWARD,
         expected_position=Point(
             0.00,
-            5.00,
+            10.00,
             0.00,
         ),
         orientation={
@@ -43,8 +43,8 @@ def test_forward_acceleration_45_yaw():
     _test_acceleration(
         direction=directions.FORWARD,
         expected_position=Point(
-            3.53555,
-            3.53555,
+            7.0711,
+            7.0711,
             0.00,
         ),
         orientation={
@@ -61,7 +61,7 @@ def test_forward_acceleration_roll_no_change():
     _test_acceleration(
         direction=directions.FORWARD,
         expected_position=Point(
-            5.00,
+            10.00,
             0.00,
             0.00,
         ),
@@ -80,7 +80,7 @@ def test_port_acceleration_90_roll():
         expected_position=Point(
             0.00,
             0.00,
-            -5.00,
+            -10.00,
         ),
         orientation={
             directions.YAW: 0,
@@ -96,8 +96,8 @@ def test_port_acceleration_45_roll():
         direction=directions.PORT,
         expected_position=Point(
             0.00,
-            -3.53555,
-            -3.53555,
+            -7.0711,
+            -7.0711,
         ),
         orientation={
             directions.YAW: 0,
@@ -114,7 +114,7 @@ def test_overhead_acceleration_pitch_no_change():
         direction=directions.STARBOARD,
         expected_position=Point(
             0.00,
-            5.00,
+            10.00,
             0.00,
         ),
         orientation={
@@ -132,7 +132,7 @@ def test_forward_acceleration_90_pitch():
         expected_position=Point(
             0.00,
             0.00,
-            -5.00
+            -10.00
         ),
         orientation={
             directions.YAW: 0,
@@ -147,9 +147,9 @@ def test_forward_acceleration_45_pitch():
     _test_acceleration(
         direction=directions.FORWARD,
         expected_position=Point(
-            3.53555,
+            7.0711,
             0.00,
-            -3.53555
+            -7.0711
         ),
         orientation={
             directions.YAW: 0,
