@@ -20,6 +20,8 @@ class Ship(Body):
             side: kwargs.pop(F"{side}_panel", ShipPanel(side=side))
             for side in DIRECTIONS
         }
+        for panel in self.panels.values():
+            panel.ship = self
         for obj in self.reaction_wheels + list(self.panels.values()):
             obj.attached_body = self
         self.mass += self._calculate_mass()
@@ -53,7 +55,7 @@ class Ship(Body):
         if self.power_available == 0:
             return self.power_available
         return min(1, self.power_available/self.power_consumption)
-    
+
     @property
     def thrusters(self):
         return [thruster for panel in self.panels.values()
