@@ -2,7 +2,7 @@ from space.components.base import MovementComponent
 from space.constants.directions import COUNTER_DIRECTIONS
 from space.constants.directions import DIRECTIONAL_VECTORS
 from space.constants.ratios import KG_PER_THRUSTER_ACC
-from space.utils.vectors import round_point
+from space.utils.vectors import round_point, rotate_vector
 
 
 class Thruster(MovementComponent):
@@ -24,14 +24,12 @@ class Thruster(MovementComponent):
         the acceleration vector, by multiplying this vector by accelleration
         """
 
-        vector = DIRECTIONAL_VECTORS[self.direction]
-        # Rotate by Roll
-        vector = round_point(vector.rotate(self.get_roll(), (1, 0, 0)))
-        # Rotate by Pitch
-        vector = round_point(vector.rotate(self.get_pitch(), (0, 1, 0)))
-        # Rotate by Yaw
-        vector = round_point(vector.rotate(self.get_yaw(), (0, 0, 1)))
-        return vector
+        return rotate_vector(
+            vector=DIRECTIONAL_VECTORS[self.direction],
+            roll=self.get_roll(),
+            pitch=self.get_pitch(),
+            yaw=self.get_yaw()
+        )
 
     @property
     def attached_body(self):
