@@ -18,6 +18,10 @@ class Sensor(PoweredComponent):
         self.yaw_degrees = sanitize_sensor_orientation(kwargs.get('yaw'))
 
     @property
+    def power_consumption(self):
+        return 20
+
+    @property
     def range(self):
         return self.base_range * self.focus/9
 
