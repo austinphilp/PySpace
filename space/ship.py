@@ -6,6 +6,7 @@ class ShipPanel(object):
     def __init__(self, side, *args, **kwargs):
         self.side = side
         self.thrusters = kwargs.get('thrusters', [])
+        self.sensors = kwargs.get('sensors', [])
         for thruster in self.thrusters:
             thruster.attached_panel = self
         self.mass = sum(t.mass for t in self.thrusters)
@@ -46,8 +47,14 @@ class Ship(Body):
 
     @property
     def power_consumption(self):
-        thruster_consumption = sum(t.power_consumption for t in self.thrusters)
-        wheel_consumption = sum(r.power_consumption for r in self.reaction_wheels)
+        thruster_consumption = sum(
+            t.power_consumption
+            for t in self.thrusters
+        )
+        wheel_consumption = sum(
+            r.power_consumption
+            for r in self.reaction_wheels
+        )
         return thruster_consumption + wheel_consumption
 
     @property
