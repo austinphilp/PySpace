@@ -1,5 +1,6 @@
 from space.body import Body
 from space.constants.directions import DIRECTIONS
+from space.mixins import OrientationMixin
 
 
 class ShipPanel(object):
@@ -7,14 +8,15 @@ class ShipPanel(object):
         self.side = side
         self.thrusters = kwargs.get('thrusters', [])
         self.sensors = kwargs.get('sensors', [])
-        for thruster in self.thrusters:
-            thruster.attached_panel = self
+        for component in self.thrusters + self.sensors:
+            component.attached_panel = self
         self.mass = sum(t.mass for t in self.thrusters)
 
 
-class Ship(Body):
+class Ship(Body, OrientationMixin):
     def __init__(self, *args, **kwargs):
         super(Ship, self).__init__(*args, **kwargs)
+        OrientationMixin.__init__(self, *args, **kwargs)
         self.reaction_wheels = kwargs.pop('reaction_wheels', [])
         self.reactors = kwargs.pop('reactors', [])
         self.panels = {

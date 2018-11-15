@@ -1,14 +1,14 @@
 from space.body import Body
 from space.components import Reactor, Sensor
 from space.constants.directions import DIRECTIONS, PITCH, ROLL, YAW
-from space.ship import Panel, Ship
+from space.ship import ShipPanel, Ship
 
 
-def _assert_can_detect(target_pos, ship_orientation, sensor_orientation={},
+def _assert_can_detect(target_pos, ship_orientation={}, sensor_orientation={},
                        scan_direction=None, sensor_focus=89, has_power=True):
     reactor = Reactor(max_output=200)
     panels = {
-        F"{direction}_panel": Panel(
+        F"{direction}_panel": ShipPanel(
             side=direction,
             sensors=[Sensor(
                 base_range=2000,
@@ -29,14 +29,12 @@ def _assert_can_detect(target_pos, ship_orientation, sensor_orientation={},
     })
     if scan_direction is not None:
         sensors = [
-            sensor for panel in ship.panels
+            sensor for panel in ship.panels.values()
             for sensor in panel.sensors
         ]
     else:
         sensors = [
-            sensor for panel in ship.panels
-            for sensor in panel.sensors
-            if panel.side == scan_direction
+            sensor for sensor in ship.panels[scan_direction].sensors
         ]
     target = Body(position=target_pos)
     assert any(s.can_detect(target) for s in sensors)
