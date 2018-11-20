@@ -49,21 +49,25 @@ class Ship(Body, OrientationMixin):
 
     @property
     def power_consumption(self):
-        thruster_consumption = sum(
-            t.power_consumption
-            for t in self.thrusters
+        return (
+            sum(t.power_consumption
+                for t in self.thrusters)
+            + sum(r.power_consumption
+                  for r in self.reaction_wheels)
+            + sum(r.power_consumption
+                  for r in self.sensors)
         )
-        wheel_consumption = sum(
-            r.power_consumption
-            for r in self.reaction_wheels
-        )
-        return thruster_consumption + wheel_consumption
 
     @property
     def overall_performance_modifier(self):
-        if self.power_available == 0:
-            return self.power_available
+        if self.power_consumption == 0:
+            return 1
         return min(1, self.power_available/self.power_consumption)
+
+    @property
+    def sensors(self):
+        return [sensor for panel in self.panels.values()
+                for sensor in panel.sensors]
 
     @property
     def thrusters(self):

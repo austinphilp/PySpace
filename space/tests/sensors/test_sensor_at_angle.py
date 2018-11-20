@@ -8,7 +8,7 @@ def test_can_sense_at_angle_pitch():
         target_pos=Point(0, 10, 10),
         scan_direction=STARBOARD,
         sensor_orientation={
-            PITCH: 10,
+            PITCH: 15,
             YAW: 45
         }
     )
@@ -20,6 +20,6 @@ def test_can_sense_at_angle_yaw():
         scan_direction=STARBOARD,
         sensor_orientation={
             PITCH: 45,
-            YAW: 10
+            YAW: 15
         }
     )

@@ -17,7 +17,7 @@ class Sensor(OrientationMixin, PoweredComponent):
 
     @property
     def power_consumption(self):
-        return 20
+        return 200
 
     @property
     def attached_body(self):
