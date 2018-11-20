@@ -4,8 +4,9 @@ from space.constants.directions import DIRECTIONS, PITCH, ROLL, YAW
 from space.ship import ShipPanel, Ship
 
 
-def _assert_can_detect(target_pos, ship_orientation={}, sensor_orientation={},
-                       scan_direction=None, sensor_focus=89, has_power=True):
+def _get_sensors_for_assertion(ship_orientation={},
+                               sensor_orientation={}, scan_direction=None,
+                               sensor_focus=89, has_power=True):
     reactor = Reactor(max_output=200)
     panels = {
         F"{direction}_panel": ShipPanel(
@@ -13,8 +14,8 @@ def _assert_can_detect(target_pos, ship_orientation={}, sensor_orientation={},
             sensors=[Sensor(
                 base_range=2000,
                 focus=sensor_focus,
-                pitch=sensor_orientation.get(PITCH, 45),
-                yaw=sensor_orientation.get(YAW, 45)
+                pitch=sensor_orientation.get(PITCH, 0),
+                yaw=sensor_orientation.get(YAW, 0)
             )]
         )
         for direction in DIRECTIONS
@@ -36,5 +37,16 @@ def _assert_can_detect(target_pos, ship_orientation={}, sensor_orientation={},
         sensors = [
             sensor for sensor in ship.panels[scan_direction].sensors
         ]
+    return sensors
+
+
+def _assert_can_detect(target_pos, *args, **kwargs):
     target = Body(position=target_pos)
+    sensors = _get_sensors_for_assertion(*args, **kwargs)
     assert any(s.can_detect(target) for s in sensors)
+
+
+def _assert_can_not_detect(target_pos, *args, **kwargs):
+    target = Body(position=target_pos)
+    sensors = _get_sensors_for_assertion(*args, **kwargs)
+    assert all(not s.can_detect(target) for s in sensors)

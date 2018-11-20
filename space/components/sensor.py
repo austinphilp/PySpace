@@ -5,7 +5,6 @@ from space.constants.math import DEGREES_TO_RADIANS
 from space.mixins import OrientationMixin
 from space.utils.sanitization import (
     sanitize_sensor_focus,
-    sanitize_sensor_orientation
 )
 from space.utils.vectors import get_distance, rotate_vector
 
@@ -21,16 +20,24 @@ class Sensor(OrientationMixin, PoweredComponent):
         return 20
 
     @property
+    def attached_body(self):
+        return self.attached_panel.attached_body
+
+    @property
     def range(self):
-        return self.base_range * self.focus/9
+        return (
+            self.base_range *
+            self.focus/9 *
+            self.attached_body.overall_performance_modifier
+        )
 
     @property
     def directional_vector(self):
         return rotate_vector(
             vector=DIRECTIONAL_VECTORS[self.attached_panel.side],
             roll=0,
-            pitch=self.get_pitch(),
-            yaw=self.get_yaw()
+            pitch=90-self.get_pitch(),
+            yaw=90-self.get_yaw()
         )
 
     def get_sensor_radius_by_distance(self, distance):
@@ -38,10 +45,13 @@ class Sensor(OrientationMixin, PoweredComponent):
         return slope * distance
 
     def can_detect(self, body):
-        distance = get_distance(
+        # if self.focus == 5:
+        #     import pdb; pdb.set_trace()
+
+        distance = min(get_distance(
             body.position,
             self.attached_panel.ship.position
-        )
+        ), self.range)
         sensor_vector = self.directional_vector.multiply(distance)
         radius = self.get_sensor_radius_by_distance(distance)
         return get_distance(sensor_vector, body.position) <= radius
