@@ -14,8 +14,8 @@ def _get_sensors_for_assertion(ship_orientation={},
             sensors=[Sensor(
                 base_range=2000,
                 focus=sensor_focus,
-                pitch=sensor_orientation.get(PITCH, 0),
-                yaw=sensor_orientation.get(YAW, 0)
+                pitch=sensor_orientation.get(PITCH, 90),
+                yaw=sensor_orientation.get(YAW, 90)
             )]
         )
         for direction in DIRECTIONS
@@ -28,7 +28,7 @@ def _get_sensors_for_assertion(ship_orientation={},
         ROLL: ship_orientation.get(ROLL, 0),
         YAW: ship_orientation.get(YAW, 0),
     })
-    if scan_direction is not None:
+    if scan_direction is None:
         sensors = [
             sensor for panel in ship.panels.values()
             for sensor in panel.sensors
@@ -41,6 +41,9 @@ def _get_sensors_for_assertion(ship_orientation={},
 
 
 def _assert_can_detect(target_pos, *args, **kwargs):
+    if kwargs.get('test'):
+        del kwargs['test']
+        import pdb; pdb.set_trace()
     target = Body(position=target_pos)
     sensors = _get_sensors_for_assertion(*args, **kwargs)
     assert any(s.can_detect(target) for s in sensors)

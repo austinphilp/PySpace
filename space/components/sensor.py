@@ -33,11 +33,13 @@ class Sensor(OrientationMixin, PoweredComponent):
 
     @property
     def directional_vector(self):
-        return rotate_vector(
-            vector=DIRECTIONAL_VECTORS[self.attached_panel.side],
-            roll=0,
-            pitch=90-self.get_pitch(),
-            yaw=90-self.get_yaw()
+        return self.attached_body.rotate_vector_by_orientation(
+            rotate_vector(
+                vector=DIRECTIONAL_VECTORS[self.attached_panel.side],
+                roll=0,
+                pitch=(DEGREES_TO_RADIANS*90)-self.get_pitch(),
+                yaw=(DEGREES_TO_RADIANS*90)-self.get_yaw()
+            )
         )
 
     def get_sensor_radius_by_distance(self, distance):
@@ -45,12 +47,9 @@ class Sensor(OrientationMixin, PoweredComponent):
         return slope * distance
 
     def can_detect(self, body):
-        # if self.focus == 5:
-        #     import pdb; pdb.set_trace()
-
         distance = min(get_distance(
             body.position,
-            self.attached_panel.ship.position
+            self.attached_body.position
         ), self.range)
         sensor_vector = self.directional_vector.multiply(distance)
         radius = self.get_sensor_radius_by_distance(distance)

@@ -10,7 +10,7 @@ def apply_acceleration_to_vector(self, vector, acceleration):
 
 def get_distance(point_1, point_2):
     return sqrt(
-        ((point_2.x - point_1.y)**2) +
+        ((point_2.x - point_1.x)**2) +
         ((point_2.y - point_1.y)**2) +
         ((point_2.z - point_1.z)**2)
     )

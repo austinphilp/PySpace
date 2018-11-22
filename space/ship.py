@@ -1,6 +1,7 @@
 from space.body import Body
 from space.constants.directions import DIRECTIONS
 from space.mixins import OrientationMixin
+from space.utils.vectors import rotate_vector
 
 
 class ShipPanel(object):
@@ -81,6 +82,14 @@ class Ship(Body, OrientationMixin):
         self._apply_thrust()
         self._apply_rotation()
         self.position += self.current_vector
+
+    def rotate_vector_by_orientation(self, vector):
+        return rotate_vector(
+            vector=vector,
+            roll=self.get_roll(),
+            yaw=self.get_yaw(),
+            pitch=self.get_pitch()
+        )
 
     def _apply_rotation(self):
         self._update_rotational_speed()
