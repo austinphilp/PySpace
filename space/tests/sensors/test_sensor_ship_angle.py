@@ -17,5 +17,4 @@ def test_can_sense_ship_at_angle():
             YAW: 90
         },
         sensor_focus=45,
-        test=True
     )

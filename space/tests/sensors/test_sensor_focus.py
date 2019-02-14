@@ -8,7 +8,6 @@ def test_can_sense_narrow_focus():
         target_pos=Point(0, 10, 0),
         scan_direction=STARBOARD,
         sensor_focus=5,
-        test=True
     )
 
 
@@ -24,5 +23,6 @@ def test_cant_sense_out_of_focus():
     _assert_can_not_detect(
         target_pos=Point(0, 10, 10),
         scan_direction=STARBOARD,
-        sensor_focus=5
+        sensor_focus=1,
+        test=True
     )
