@@ -6,7 +6,7 @@ from space.tests.assertions import _assert_can_detect
 def test_can_sense_no_angle_sb():
     _assert_can_detect(
         target_pos=Point(0, 10, 0),
-        scan_direction=directions.STARBOARD
+        scan_direction=directions.STARBOARD,
     )
 
 

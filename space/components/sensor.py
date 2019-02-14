@@ -1,6 +1,5 @@
 from math import tan
 
-from mathutils.geometry import intersect_point_line
 from vectors import Vector
 
 from space.components.base import PoweredComponent
@@ -56,13 +55,15 @@ class Sensor(OrientationMixin, PoweredComponent):
             get_distance(body.position, self.position),
             self.range
         )
-        sensor_vector = self.unit_vector.multiply(target_distance)
-        intersection_point, intersect_distance = intersect_point_line(
-            body.position.to_list(),
-            self.position.to_list(),
-            sensor_vector.to_list()
-        )
-        intersection_point = Vector(*intersection_point)
-        intersect_distance = get_distance(sensor_vector, intersection_point)
-        sensor_radius = self.get_sensor_radius_at_point(intersection_point)
-        return intersect_distance <= sensor_radius
+        # TODO(Austin) - Fix this on the actual library
+        x = Vector.from_list((self.position - body.position).to_list())
+        dist_along_axis = x.dot(self.unit_vector)
+        if 0 <= dist_along_axis <= target_distance:
+            cone_radius = self.get_sensor_radius_at_point(
+                self.unit_vector.multiply(dist_along_axis)
+            )
+            orth_distance = (x - self.unit_vector.multiply(
+                dist_along_axis)
+            ).magnitude()
+            return orth_distance < cone_radius
+        return False

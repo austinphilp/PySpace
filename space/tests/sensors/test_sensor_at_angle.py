@@ -20,6 +20,6 @@ def test_can_sense_at_angle_yaw():
         scan_direction=STARBOARD,
         sensor_orientation={
             PITCH: 45,
-            YAW: 15
-        }
+            YAW: 67.5
+        },
     )

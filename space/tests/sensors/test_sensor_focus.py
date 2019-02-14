@@ -24,5 +24,4 @@ def test_cant_sense_out_of_focus():
         target_pos=Point(0, 10, 10),
         scan_direction=STARBOARD,
         sensor_focus=1,
-        test=True
     )
