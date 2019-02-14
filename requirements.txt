@@ -1,2 +1,3 @@
 pytest
-git+https://github.com/allelos/vectors
+mathutils==2.79
+git+https://github.com/austinphilp/vectors
