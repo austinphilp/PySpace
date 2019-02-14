@@ -24,6 +24,10 @@ class BaseComponent(ABC):
     def degredation_rate(self):
         return 0
 
+    @property
+    def position(self):
+        return self.attached_body.position
+
     def degrade(self, amount):
         self.integrity -= amount
         return self.integrity

@@ -9,10 +9,20 @@ def apply_acceleration_to_vector(self, vector, acceleration):
 
 
 def get_distance(point_1, point_2):
+    if isinstance(point_1, list) or isinstance(point_1, tuple):
+        x1, y1, z1 = point_1
+    else:
+        x1, y1, z1 = point_1.x, point_1.y, point_1.z
+
+    if isinstance(point_2, list) or isinstance(point_2, tuple):
+        x2, y2, z2 = point_2
+    else:
+        x2, y2, z2 = point_2.x, point_2.y, point_2.z
+
     return sqrt(
-        ((point_2.x - point_1.x)**2) +
-        ((point_2.y - point_1.y)**2) +
-        ((point_2.z - point_1.z)**2)
+        ((x2 - x1)**2) +
+        ((y2 - y1)**2) +
+        ((z2 - z1)**2)
     )
 
 

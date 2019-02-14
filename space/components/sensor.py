@@ -1,4 +1,8 @@
 from math import tan
+
+from mathutils.geometry import intersect_point_line
+from vectors import Vector
+
 from space.components.base import PoweredComponent
 from space.constants.directions import DIRECTIONAL_VECTORS
 from space.constants.math import DEGREES_TO_RADIANS
@@ -32,8 +36,8 @@ class Sensor(OrientationMixin, PoweredComponent):
         )
 
     @property
-    def directional_vector(self):
-        return self.attached_body.rotate_vector_by_orientation(
+    def unit_vector(self):
+        directional_vector = self.attached_body.rotate_vector_by_orientation(
             rotate_vector(
                 vector=DIRECTIONAL_VECTORS[self.attached_panel.side],
                 roll=0,
@@ -41,16 +45,24 @@ class Sensor(OrientationMixin, PoweredComponent):
                 yaw=(DEGREES_TO_RADIANS*90)-self.get_yaw()
             )
         )
+        return Vector.from_points(self.position, directional_vector).unit()
 
-    def get_sensor_radius_by_distance(self, distance):
+    def get_sensor_radius_at_point(self, point):
         slope = tan(self.focus * DEGREES_TO_RADIANS)
-        return slope * distance
+        return slope * Vector.from_points(self.position, point).magnitude()
 
     def can_detect(self, body):
-        distance = min(get_distance(
-            body.position,
-            self.attached_body.position
-        ), self.range)
-        sensor_vector = self.directional_vector.multiply(distance)
-        radius = self.get_sensor_radius_by_distance(distance)
-        return get_distance(sensor_vector, body.position) <= radius
+        target_distance = min(
+            get_distance(body.position, self.position),
+            self.range
+        )
+        sensor_vector = self.unit_vector.multiply(target_distance)
+        intersection_point, intersect_distance = intersect_point_line(
+            body.position.to_list(),
+            self.position.to_list(),
+            sensor_vector.to_list()
+        )
+        intersection_point = Vector(*intersection_point)
+        intersect_distance = get_distance(sensor_vector, intersection_point)
+        sensor_radius = self.get_sensor_radius_at_point(intersection_point)
+        return intersect_distance <= sensor_radius
