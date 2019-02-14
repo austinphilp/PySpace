@@ -24,6 +24,10 @@ class BaseComponent(ABC):
     def degredation_rate(self):
         return 0
 
+    @property
+    def position(self):
+        return self.attached_body.position
+
     def degrade(self, amount):
         self.integrity -= amount
         return self.integrity
@@ -37,13 +41,6 @@ class PoweredComponent(BaseComponent):
     def __init__(self, *args, **kwargs):
         BaseComponent.__init__(self, *args, **kwargs)
         self.powered_on = kwargs.get('powered_on', True)
-
-    @property
-    def power_adjusted_current_force(self):
-        return (
-            self.current_force *
-            self.attached_body.overall_performance_modifier
-        )
 
     @property
     def power_consumption(self):
@@ -63,6 +60,13 @@ class MovementComponent(PoweredComponent):
     @property
     def throttle(self):
         return self._throttle
+
+    @property
+    def power_adjusted_current_force(self):
+        return (
+            self.current_force *
+            self.attached_body.overall_performance_modifier
+        )
 
     @throttle.setter
     def throttle(self, throttle):

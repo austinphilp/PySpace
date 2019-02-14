@@ -24,14 +24,9 @@ class Thruster(MovementComponent):
         the acceleration vector, by multiplying this vector by accelleration
         """
 
-        vector = DIRECTIONAL_VECTORS[self.direction]
-        # Rotate by Roll
-        vector = round_point(vector.rotate(self.get_roll(), (1, 0, 0)))
-        # Rotate by Pitch
-        vector = round_point(vector.rotate(self.get_pitch(), (0, 1, 0)))
-        # Rotate by Yaw
-        vector = round_point(vector.rotate(self.get_yaw(), (0, 0, 1)))
-        return vector
+        return self.attached_body.rotate_vector_by_orientation(
+            vector=DIRECTIONAL_VECTORS[self.direction],
+        )
 
     @property
     def attached_body(self):
@@ -46,12 +41,3 @@ class Thruster(MovementComponent):
     @property
     def current_acceleration(self):
         return self.power_adjusted_current_force/self.attached_body.mass
-
-    def get_roll(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_roll(*args, **kwargs)
-
-    def get_yaw(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_yaw(*args, **kwargs)
-
-    def get_pitch(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_pitch(*args, **kwargs)

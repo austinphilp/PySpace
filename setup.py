@@ -8,7 +8,7 @@ with open(path.join(cwd, 'README.md')) as f:
     long_description = f.read()
 
 setup(
-    name="pyspace-server",
+    name="space",
     version="0.0.1",
     author="Austin Philp",
     author_email="austinphilp@gmail.com",

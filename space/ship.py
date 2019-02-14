@@ -1,25 +1,31 @@
 from space.body import Body
 from space.constants.directions import DIRECTIONS
+from space.mixins import OrientationMixin
+from space.utils.vectors import rotate_vector
 
 
 class ShipPanel(object):
     def __init__(self, side, *args, **kwargs):
         self.side = side
         self.thrusters = kwargs.get('thrusters', [])
-        for thruster in self.thrusters:
-            thruster.attached_panel = self
+        self.sensors = kwargs.get('sensors', [])
+        for component in self.thrusters + self.sensors:
+            component.attached_panel = self
         self.mass = sum(t.mass for t in self.thrusters)
 
 
-class Ship(Body):
+class Ship(Body, OrientationMixin):
     def __init__(self, *args, **kwargs):
         super(Ship, self).__init__(*args, **kwargs)
+        OrientationMixin.__init__(self, *args, **kwargs)
         self.reaction_wheels = kwargs.pop('reaction_wheels', [])
         self.reactors = kwargs.pop('reactors', [])
         self.panels = {
             side: kwargs.pop(F"{side}_panel", ShipPanel(side=side))
             for side in DIRECTIONS
         }
+        for panel in self.panels.values():
+            panel.ship = self
         for obj in self.reaction_wheels + list(self.panels.values()):
             obj.attached_body = self
         self.mass += self._calculate_mass()
@@ -44,16 +50,26 @@ class Ship(Body):
 
     @property
     def power_consumption(self):
-        thruster_consumption = sum(t.power_consumption for t in self.thrusters)
-        wheel_consumption = sum(r.power_consumption for r in self.reaction_wheels)
-        return thruster_consumption + wheel_consumption
+        return (
+            sum(t.power_consumption
+                for t in self.thrusters)
+            + sum(r.power_consumption
+                  for r in self.reaction_wheels)
+            + sum(r.power_consumption
+                  for r in self.sensors)
+        )
 
     @property
     def overall_performance_modifier(self):
-        if self.power_available == 0:
-            return self.power_available
+        if self.power_consumption == 0:
+            return 1
         return min(1, self.power_available/self.power_consumption)
-    
+
+    @property
+    def sensors(self):
+        return [sensor for panel in self.panels.values()
+                for sensor in panel.sensors]
+
     @property
     def thrusters(self):
         return [thruster for panel in self.panels.values()
@@ -66,6 +82,14 @@ class Ship(Body):
         self._apply_thrust()
         self._apply_rotation()
         self.position += self.current_vector
+
+    def rotate_vector_by_orientation(self, vector):
+        return rotate_vector(
+            vector=vector,
+            roll=self.get_roll(),
+            yaw=self.get_yaw(),
+            pitch=self.get_pitch()
+        )
 
     def _apply_rotation(self):
         self._update_rotational_speed()

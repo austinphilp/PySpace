@@ -8,7 +8,7 @@ venv:
 
 test:
 	make venv
-	venv/bin/python3 -m pytest space/*
+	venv/bin/python3 -m pytest space/tests
 
 flake8:
 	venv/bin/flake8
