@@ -8,7 +8,7 @@ class DimensionsMixin(object):
         self.depth = kwargs.pop('depth', 0)
 
 
-class OrientationMixin(object):
+class OrientationMixin(DimensionsMixin):
     def __init__(self, *args, **kwargs):
         self.yaw_degrees = kwargs.pop('yaw', 0)
         self.roll_degrees = kwargs.pop('roll', 0)
