@@ -63,7 +63,10 @@ class Ship(Body, OrientationMixin):
     def overall_performance_modifier(self):
         if self.power_consumption == 0:
             return 1
-        return min(1, self.power_available/self.power_consumption)
+        return min(
+            1,
+            self.power_available/self.power_consumption
+        ) * self.integrity
 
     @property
     def sensors(self):
