@@ -12,6 +12,7 @@ class Body(OrientationMixin):
         self.yaw_speed = kwargs.pop('yaw_speed', 0)
         self.roll_speed = kwargs.pop('roll_speed', 0)
         self.pitch_speed = kwargs.pop('pitch_speed', 0)
+        self.integrity = 1.0
         self._acceleration_vectors = []
 
     def add_acceleration_vector(self, vector):
@@ -22,6 +23,10 @@ class Body(OrientationMixin):
             self.current_vector += vector
         self._acceleration_vectors = []
         self.position += self.current_vector
+
+    def perform_collision(self, other_body):
+        force = other_body.mass * other_body.current_vector.magnitude()
+        self.integrity -= force/self.mass
 
     def is_colliding(self, other_body):
         # TODO(Austin) - Refactor, this is super ugly
