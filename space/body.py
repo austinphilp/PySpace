@@ -22,3 +22,24 @@ class Body(OrientationMixin):
             self.current_vector += vector
         self._acceleration_vectors = []
         self.position += self.current_vector
+
+    def is_colliding(self, other_body):
+        # TODO(Austin) - Refactor, this is super ugly
+        a_x1 = self.position.x - (self.width/2)
+        a_x2 = self.position.x + (self.width/2)
+        a_y1 = self.position.y - (self.depth/2)
+        a_y2 = self.position.y + (self.depth/2)
+        a_z1 = self.position.z - (self.height/2)
+        a_z2 = self.position.z + (self.height/2)
+        b_x1 = other_body.position.x - (other_body.width/2)
+        b_x2 = other_body.position.x + (other_body.width/2)
+        b_y1 = other_body.position.y - (other_body.depth/2)
+        b_y2 = other_body.position.y + (other_body.depth/2)
+        b_z1 = other_body.position.z - (other_body.height/2)
+        b_z2 = other_body.position.z + (other_body.height/2)
+        return not a_x2 < b_x1 and \
+            not b_x2 < a_x1 and \
+            not a_y2 < b_y1 and \
+            not b_y2 < a_y1 and \
+            not a_z2 < b_z1 and \
+            not b_z2 < a_z1
