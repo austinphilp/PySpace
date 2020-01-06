@@ -3,8 +3,7 @@ from os import path
 from setuptools import find_packages
 from setuptools import setup
 
-cwd = path.abspath(path.dirname(__file__))
-with open(path.join(cwd, 'README.md')) as f:
+with open(path.join(path.abspath(path.dirname(__file__)), 'README.md')) as f:
     long_description = f.read()
 
 setup(
@@ -15,6 +14,6 @@ setup(
     description="A space simulation to be programmed against",
     long_description=long_description,
     license="The MIT License (MIT)",
-    url="https://github.com/allelos/vectors",
+    url="https://github.com/austinphilp/pyspace",
     packages=find_packages(exclude=['contrib', 'docs', 'test']),
 )
