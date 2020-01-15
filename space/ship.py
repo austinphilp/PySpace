@@ -78,6 +78,16 @@ class Ship(Body, OrientationMixin):
         return [thruster for panel in self.panels.values()
                 for thruster in panel.thrusters]
 
+    @property
+    def status_report(self):
+        return {
+            "vector": self.current_vector,
+            "panels": [
+                p.status_report for p in self.panels.values()
+            ],
+            "reactors": [r.status_reporr for r in self.reactors]
+        }
+
     def get_thrusters_by_orientation(self, orientation):
         return [t for t in self.thrusters if t.direction == orientation]
 
