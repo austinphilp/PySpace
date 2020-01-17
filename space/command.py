@@ -7,10 +7,25 @@ from components import (
 
 
 class Command(object):
-    def __init__(self, command_block):
-        self.object_id = command_block[0:8].rstrip('\0').decode('utf-8')
-        self.command = command_block[8:32].rstrip('\0').decode('utf-8')
-        self._raw_args = command_block[32:256].rstrip('\0').decode('utf-8')
+    def __init__(self, object_id, command, raw_arguments):
+        self.object_id = object_id
+        self.command = command
+        self._raw_args = raw_arguments
+
+    @classmethod
+    def Parse(self, command_block):
+        object_id = command_block[0:8].rstrip('\0').decode('utf-8')
+        command = command_block[8:32].rstrip('\0').decode('utf-8')
+        _raw_args = command_block[32:256].rstrip('\0').decode('utf-8')
+        if command == "set_throttle":
+            cls = SetThrottle
+        if command == "set_power":
+            cls = SetPower
+        if command == "set_rotation":
+            cls = SetThrottle
+        if command == "set_focus":
+            cls = SetThrottle
+        return cls(object_id, command, _raw_args)
 
     def _validate(self):
         if self.object.__class__ not in self.ALLOWED_OBJECTS:
