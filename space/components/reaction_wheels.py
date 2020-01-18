@@ -14,9 +14,18 @@ class ReactionWheel(MovementComponent):
     def axis(self):
         return self._axis
 
-
     @property
     def current_acceleration(self):
         force = super(ReactionWheel, self).current_force
-        force /= self.attached_body.mass
+        force /= getattr(self.attached_body, 'mass', 1)
         return force if self.rotation == CLOCKWISE else -force
+
+    @property
+    def status_report(self):
+        return {
+            **super(ReactionWheel, self).status_report,
+            "current_acceleration": self.current_acceleration,
+            "axis": self.axis,
+            "rotation": self.rotation,
+            "mass": self.mass
+        }

@@ -104,3 +104,9 @@ class SetFocus(Command):
         super()._validate()
         if self.focus <= 0 or self.focus >= 90:
             raise Exception("Bad Range for Focus")
+
+
+class StatusReport(Command):
+    def exec(self, system):
+        super().exec(system)
+        return self.object.status_report

@@ -13,6 +13,7 @@ class OrientationMixin(DimensionsMixin):
         self.yaw_degrees = kwargs.pop('yaw', 0)
         self.roll_degrees = kwargs.pop('roll', 0)
         self.pitch_degrees = kwargs.pop('pitch', 0)
+        super(OrientationMixin, self).__init__(self)
 
     def get_yaw(self, unit_type=RADIANS):
         if unit_type == RADIANS:

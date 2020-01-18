@@ -30,7 +30,11 @@ class Thruster(MovementComponent):
 
     @property
     def attached_body(self):
-        return self.attached_panel.attached_body
+        return getattr(self.attached_panel, 'attached_body', None)
+
+    @attached_body.setter
+    def attached_body(self, body):
+        pass
 
     @property
     def acceleration_vector(self):
@@ -41,3 +45,14 @@ class Thruster(MovementComponent):
     @property
     def current_acceleration(self):
         return self.power_adjusted_current_force/self.attached_body.mass
+
+    @property
+    def status_report(self):
+        return {
+            **super().status_report,
+            "direction": self.direction,
+            "acceleration_vector": self.acceleration_vector,
+            "current_acceleration": self.current_acceleration,
+            "current_force": self.power_adjusted_current_force,
+            "mass": self.mass
+        }

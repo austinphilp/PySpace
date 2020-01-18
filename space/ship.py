@@ -13,6 +13,15 @@ class ShipPanel(object):
             component.attached_panel = self
         self.mass = sum(t.mass for t in self.thrusters)
 
+    @property
+    def status_report(self):
+        return {
+            "side": self.side,
+            "thrusters": [t.status_report for t in self.thrusters],
+            "sensors": [s.status_report for s in self.sensors],
+            "mass": self.mass
+        }
+
 
 class Ship(Body, OrientationMixin):
     def __init__(self, *args, **kwargs):
@@ -81,11 +90,13 @@ class Ship(Body, OrientationMixin):
     @property
     def status_report(self):
         return {
+            "mass": self.mass,
             "vector": self.current_vector,
-            "panels": [
-                p.status_report for p in self.panels.values()
-            ],
-            "reactors": [r.status_reporr for r in self.reactors]
+            "panels": [p.status_report for p in self.panels.values()],
+            "reactors": [r.status_report for r in self.reactors],
+            "reaction_wheels": [w.status_report for w in self.reaction_wheels],
+            "power_available": self.power_available,
+            "power_consumption": self.power_consumption,
         }
 
     def get_thrusters_by_orientation(self, orientation):
