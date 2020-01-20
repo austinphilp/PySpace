@@ -1,10 +1,11 @@
 from abc import ABC
 
+from space.mixins import IdentityMixin
 from space.utils.sanitization import sanitize_integrity
 from space.utils.sanitization import sanitize_throttle
 
 
-class BaseComponent(ABC):
+class BaseComponent(ABC, IdentityMixin):
     def __init__(self, *args, **kwargs):
         self._integrity = 1.0
         self.attached_body = kwargs.get('attached_body')

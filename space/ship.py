@@ -1,10 +1,10 @@
 from space.body import Body
 from space.constants.directions import DIRECTIONS
-from space.mixins import OrientationMixin
+from space.mixins import IdentityMixin, OrientationMixin
 from space.utils.vectors import rotate_vector
 
 
-class ShipPanel(object):
+class ShipPanel(IdentityMixin):
     def __init__(self, side, *args, **kwargs):
         self.side = side
         self.thrusters = kwargs.get('thrusters', [])
@@ -22,8 +22,13 @@ class ShipPanel(object):
             "mass": self.mass
         }
 
+    def get_all_parts(self):
+        return {
+            part.object_id for part in [self.thrusters, self.sensors]
+        }
 
-class Ship(Body, OrientationMixin):
+
+class Ship(Body, OrientationMixin, IdentityMixin):
     def __init__(self, *args, **kwargs):
         super(Ship, self).__init__(*args, **kwargs)
         OrientationMixin.__init__(self, *args, **kwargs)
@@ -106,6 +111,18 @@ class Ship(Body, OrientationMixin):
         self._apply_thrust()
         self._apply_rotation()
         self.position += self.current_vector
+
+    def get_all_parts(self):
+        return {
+            part.object_id: part for part in [
+                self,
+                *self.reactors,
+                *self.reaction_wheels,
+                *self.panels.values(),
+                *self.thrusters,
+                *self.sensors,
+            ]
+        }
 
     def rotate_vector_by_orientation(self, vector):
         return rotate_vector(

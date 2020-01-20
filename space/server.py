@@ -1,3 +1,4 @@
+import json
 import socket
 from system import System
 from time import sleep
@@ -35,25 +36,37 @@ def _create_test_ship():
     })
 
 
-def _read_commands_from_socket():
+def _read_commands_from_socket(s):
     commands = []
-    with socket.socket() as s:
-        s.setblocking(False)
-        s.bind(("127.0.0.1", 8000))
-        s.listen(200)
-        conn, _ = s.accept()
-        with conn:
-            while True:
-                command_payload = conn.recv(256)
-                if not command_payload:
-                    break
-                else:
-                    commands.append(Command.Parse(command_payload))
-    return commands
+    connections = []
+    s.setblocking(False)
+    s.bind(("127.0.0.1", 8000))
+    s.listen(200)
+    conn, _ = s.accept()
+    while conn:
+        connections.append(conn)
+        while True:
+            command_payload = conn.recv(256)
+            if not command_payload:
+                break
+            else:
+                cmd = Command.Parse(command_payload)
+                commands.append(cmd)
+    return commands, connections
 
 
 if __name__ == "__main__":
     system = System()
     while True:
-        system.next_tick(_read_commands_from_socket())
-        sleep(0.1)
+        print("Entering new game loop")
+        with socket.socket() as s:
+            print("Reading new commands form sockets")
+            commands, connections = _read_commands_from_socket(s)
+            print("Executing tick")
+            system.next_tick(commands)
+            print("sending status reports")
+            for connection in connections:
+                connection.send(json.dumps(system.status_report).encode())
+                connection.close()
+            print("closed all connections")
+        sleep(1)
