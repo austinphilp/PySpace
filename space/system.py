@@ -4,10 +4,10 @@ class System(object):
         self.ships = ships
 
     def perform_tick(self, commands):
-        for command in commands:
-            command.exec(system=self)
+        responses = [command.exec(system=self) for command in commands]
         for ship in self.ships:
-            ship.apply_accelleration_vector()
+            ship.apply_acceleration_vectors()
+        return responses
 
     def get_object_by_id(self, object_id):
         for ship in self.ships:

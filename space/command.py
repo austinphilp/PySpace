@@ -5,17 +5,33 @@ from space.components import (
     Sensor
 )
 from space.exceptions import InvalidObjectForCommand, InputValidationError
+from space.mixins import IdentityMixin
 
 
-class Command(object):
+class Response(object):
+    def __init__(self, command, value):
+        self.command = command
+        self.value = value
+
+    @property
+    def command_id(self):
+        return self.command.command_id
+
+    @property
+    def connection(self):
+        return self.command.connection
+
+
+class Command(IdentityMixin):
     def __init__(self, object_id, command, raw_arguments):
-        self.object_id = object_id
+        self._object_id = object_id
         self.command = command
         self._raw_args = raw_arguments
         self._parse_args()
+        self.command_id = self.object_id
 
     @classmethod
-    def Parse(self, command_block):
+    def Parse(self, command_block, connection=None):
         object_id = command_block[0:8].rstrip(b"\0").decode('utf-8')
         command = command_block[8:32].rstrip(b"\0").decode('utf-8')
         _raw_args = command_block[32:256].rstrip(b"\0").decode('utf-8')
@@ -27,7 +43,11 @@ class Command(object):
             cls = SetRotation
         if command == "set_focus":
             cls = SetFocus
-        return cls(object_id, command, _raw_args)
+        if command == "status_report":
+            cls = StatusReport
+        instance = cls(object_id, command, _raw_args)
+        instance.connection = connection
+        return instance
 
     def _validate(self):
         if self.object.__class__ not in self.ALLOWED_OBJECTS:
@@ -41,7 +61,7 @@ class Command(object):
         raise NotImplementedError("Not Implemented")
 
     def _get_object(self, system):
-        self.object = system.get_object_by_id(self.object_id)
+        self.object = system.get_object_by_id(self._object_id)
 
     def exec(self, system):
         self._get_object(system)
@@ -52,7 +72,10 @@ class SetThrottle(Command):
     ALLOWED_OBJECTS = [ReactionWheel, Thruster, Reactor]
 
     def _parse_args(self):
-        self.throttle = float(self._raw_args)
+        try:
+            self.throttle = float(self._raw_args)
+        except ValueError:
+            raise InputValidationError("Bad value for throttle")
 
     def _validate(self):
         super()._validate()
@@ -62,6 +85,7 @@ class SetThrottle(Command):
     def exec(self, system):
         super().exec(system)
         self.object.throttle = self.throttle
+        return Response(self, self.object.status_report)
 
 
 class SetPower(Command):
@@ -76,6 +100,7 @@ class SetPower(Command):
     def exec(self, system):
         super().exec(system)
         self.object.powered_on = self.toggle
+        return Response(self, self.object.status_report)
 
 
 class SetRotation(Command):
@@ -100,6 +125,7 @@ class SetRotation(Command):
         super().exec(system)
         self.object.pitch_degrees = self.pitch
         self.object.yaw_degrees = self.yaw
+        return Response(self, self.object.status_report)
 
 
 class SetFocus(Command):
@@ -108,6 +134,7 @@ class SetFocus(Command):
     def exec(self, system):
         super().exec(system)
         self.object.focus = self.focus
+        return Response(self, self.object.status_report)
 
     def _parse_args(self):
         try:
@@ -122,6 +149,12 @@ class SetFocus(Command):
 
 
 class StatusReport(Command):
+    def _parse_args(self):
+        pass
+
+    def _validate(self):
+        pass
+
     def exec(self, system):
         super().exec(system)
-        return self.object.status_report
+        return Response(self, (self.object or system).status_report)

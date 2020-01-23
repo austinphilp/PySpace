@@ -36,6 +36,7 @@ class BaseComponent(ABC, IdentityMixin):
         return {
             "integrity": self.integrity,
             "is_acitve": self.is_active,
+            "object_id": self.object_id
         }
 
     def degrade(self, amount):
@@ -68,6 +69,7 @@ class PoweredComponent(BaseComponent):
             "is_active": self.is_active,
             "powered_on": self.powered_on,
             "power_consumption": self.power_consumption,
+            "object_id": self.object_id
         }
 
 
@@ -103,7 +105,8 @@ class MovementComponent(PoweredComponent):
             "throttle": self.throttle,
             "current_force": self.power_adjusted_current_force,
             "degredation_rate": self.degredation_rate,
-            "max_force": self.max_force
+            "max_force": self.max_force,
+            "object_id": self.object_id
         }
 
     def apply_degredation(self):

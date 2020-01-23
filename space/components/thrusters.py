@@ -51,7 +51,11 @@ class Thruster(MovementComponent):
         return {
             **super().status_report,
             "direction": self.direction,
-            "acceleration_vector": self.acceleration_vector,
+            "acceleration_vector": {
+                "x": self.acceleration_vector.x,
+                "y": self.acceleration_vector.y,
+                "z": self.acceleration_vector.z,
+            },
             "current_acceleration": self.current_acceleration,
             "current_force": self.power_adjusted_current_force,
             "mass": self.mass

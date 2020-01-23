@@ -1,5 +1,6 @@
 from space.body import Body
 from space.constants.directions import DIRECTIONS
+from space.constants.math import DEGREES
 from space.mixins import IdentityMixin, OrientationMixin
 from space.utils.vectors import rotate_vector
 
@@ -16,6 +17,7 @@ class ShipPanel(IdentityMixin):
     @property
     def status_report(self):
         return {
+            "object_id": self.object_id,
             "side": self.side,
             "thrusters": [t.status_report for t in self.thrusters],
             "sensors": [s.status_report for s in self.sensors],
@@ -96,9 +98,31 @@ class Ship(Body, OrientationMixin, IdentityMixin):
     def status_report(self):
         return {
             "mass": self.mass,
-            "vector": self.current_vector,
+            "object_id": self.object_id,
+            "vector": {
+                "x": self.current_vector.x,
+                "y": self.current_vector.y,
+                "z": self.current_vector.z,
+            },
+            "position": {
+                "x": self.position.x,
+                "y": self.position.y,
+                "z": self.position.z,
+            },
+            "orientation": {
+                "pitch_degrees": self.get_pitch(DEGREES),
+                "roll_degrees": self.get_roll(DEGREES),
+                "yaw_degrees": self.get_yaw(DEGREES),
+            },
+            "orientation_speed": {
+                "pitch_speed": self.pitch_speed,
+                "roll_speed": self.roll_speed,
+                "yaw_speed": self.yaw_speed,
+            },
+            "integrity": self.integrity,
             "panels": [p.status_report for p in self.panels.values()],
             "reactors": [r.status_report for r in self.reactors],
+            "thrusters": [t.status_report for t in self.thrusters],
             "reaction_wheels": [w.status_report for w in self.reaction_wheels],
             "power_available": self.power_available,
             "power_consumption": self.power_consumption,

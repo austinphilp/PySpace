@@ -1,4 +1,5 @@
 import json
+import os
 import socket
 from system import System
 from time import sleep
@@ -39,34 +40,50 @@ def _create_test_ship():
 def _read_commands_from_socket(s):
     commands = []
     connections = []
-    s.setblocking(False)
-    s.bind(("127.0.0.1", 8000))
     s.listen(200)
-    conn, _ = s.accept()
+    try:
+        conn, _ = s.accept()
+    except BlockingIOError:
+        return [], []
+    conn.setblocking(False)
     while conn:
         connections.append(conn)
-        while True:
+        try:
             command_payload = conn.recv(256)
-            if not command_payload:
-                break
-            else:
-                cmd = Command.Parse(command_payload)
-                commands.append(cmd)
+        except BlockingIOError:
+            break
+        if not command_payload:
+            break
+        else:
+            cmd = Command.Parse(command_payload, connection=conn)
+            commands.append(cmd)
     return commands, connections
 
 
 if __name__ == "__main__":
-    system = System()
-    while True:
-        print("Entering new game loop")
-        with socket.socket() as s:
+    system = System(ships=[_create_test_ship()])
+    i = 0
+    if os.path.exists("/home/austin/uds_socket"):
+        os.remove("/home/austin/uds_socket")
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+        s.setblocking(False)
+        s.bind("/home/austin/uds_socket")
+        while True:
+            print("=================== Loop {} ===================".format(i))
             print("Reading new commands form sockets")
             commands, connections = _read_commands_from_socket(s)
             print("Executing tick")
-            system.next_tick(commands)
-            print("sending status reports")
-            for connection in connections:
-                connection.send(json.dumps(system.status_report).encode())
-                connection.close()
+            responses = system.perform_tick(commands)
+            print("sending responses")
+            for response in responses:
+                payload = json.dumps(response.value).encode()
+                response.connection.send(
+                    response.command_id.encode().ljust(8, b"\0")
+                    + str(len(payload)).encode().ljust(8, b"\0")
+                    + payload
+                )
+            for conn in connections:
+                conn.close()
             print("closed all connections")
-        sleep(1)
+            i += 1
+            sleep(0.1)
