@@ -3,11 +3,10 @@ class System(object):
         # TODO(Austin) - Astronomical Body Generation.
         self.ships = ships
 
-    def perform_tick(self, commands):
-        responses = [command.exec(system=self) for command in commands]
+    def perform_tick(self):
         for ship in self.ships:
+            print("Executing tick")
             ship.apply_acceleration_vectors()
-        return responses
 
     def get_object_by_id(self, object_id):
         for ship in self.ships:
