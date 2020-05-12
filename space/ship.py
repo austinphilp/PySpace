@@ -95,6 +95,17 @@ class Ship(Body, OrientationMixin, IdentityMixin):
                 for thruster in panel.thrusters]
 
     @property
+    def current_acceleration(self):
+        acceleration = None
+        for thruster in self.thrusters:
+            if thruster.is_active:
+                if acceleration is None:
+                    acceleration = thruster.acceleration_vector
+                else:
+                    acceleration += thruster.acceleration_vector
+        return acceleration
+
+    @property
     def status_report(self):
         return {
             "mass": self.mass,
@@ -103,6 +114,11 @@ class Ship(Body, OrientationMixin, IdentityMixin):
                 "x": self.current_vector.x,
                 "y": self.current_vector.y,
                 "z": self.current_vector.z,
+            },
+            "acceleration": {
+                "x": self.current_acceleration.x,
+                "y": self.current_acceleration.y,
+                "z": self.current_acceleration.z,
             },
             "position": {
                 "x": self.position.x,
@@ -113,6 +129,9 @@ class Ship(Body, OrientationMixin, IdentityMixin):
                 "pitch_degrees": self.get_pitch(DEGREES),
                 "roll_degrees": self.get_roll(DEGREES),
                 "yaw_degrees": self.get_yaw(DEGREES),
+                "pitch_radians": self.get_pitch(),
+                "roll_radians": self.get_roll(),
+                "yaw_radians": self.get_yaw(),
             },
             "orientation_speed": {
                 "pitch_speed": self.pitch_speed,
@@ -126,6 +145,7 @@ class Ship(Body, OrientationMixin, IdentityMixin):
             "reaction_wheels": [w.status_report for w in self.reaction_wheels],
             "power_available": self.power_available,
             "power_consumption": self.power_consumption,
+            "performance_modifier": self.overall_performance_modifier
         }
 
     def get_thrusters_by_orientation(self, orientation):
@@ -159,8 +179,11 @@ class Ship(Body, OrientationMixin, IdentityMixin):
     def _apply_rotation(self):
         self._update_rotational_speed()
         self.yaw_degrees += self.yaw_speed
+        self.yaw_degrees %= 360
         self.roll_degrees += self.roll_speed
+        self.roll_degrees %= 360
         self.pitch_degrees += self.pitch_speed
+        self.pitch_degrees %= 360
 
     def _update_rotational_speed(self):
         for wheel in self.reaction_wheels:
