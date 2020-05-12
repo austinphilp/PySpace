@@ -1,28 +1,18 @@
 from vectors import Point
 from vectors import Vector
 
-from space.constants.math import DEGREES_TO_RADIANS
-from space.constants.math import RADIANS
+from space.mixins import OrientationMixin
 
 
-class DimensionsMixin(object):
-    def __init__(self, *args, **kwargs):
-        self.width = kwargs.pop('width', 0)
-        self.height = kwargs.pop('height', 0)
-        self.depth = kwargs.pop('depth', 0)
-
-
-class Body(object):
+class Body(OrientationMixin):
     def __init__(self, *args, **kwargs):
         self.position = kwargs.pop('position', Point(0, 0, 0))
         self.current_vector = kwargs.pop('current_vector', Vector(0, 0, 0))
         self.mass = kwargs.pop('mass', 0)
-        self.yaw_degrees = kwargs.pop('yaw', 0)
         self.yaw_speed = kwargs.pop('yaw_speed', 0)
-        self.roll_degrees = kwargs.pop('roll', 0)
         self.roll_speed = kwargs.pop('roll_speed', 0)
-        self.pitch_degrees = kwargs.pop('pitch', 0)
         self.pitch_speed = kwargs.pop('pitch_speed', 0)
+        self.integrity = 1.0
         self._acceleration_vectors = []
 
     def add_acceleration_vector(self, vector):
@@ -34,20 +24,27 @@ class Body(object):
         self._acceleration_vectors = []
         self.position += self.current_vector
 
-    def get_yaw(self, unit_type=RADIANS):
-        if unit_type == RADIANS:
-            return self.yaw_degrees * DEGREES_TO_RADIANS
-        else:
-            return self.yaw_degrees
+    def perform_collision(self, other_body):
+        force = other_body.mass * other_body.current_vector.magnitude()
+        self.integrity -= force/self.mass
 
-    def get_pitch(self, unit_type=RADIANS):
-        if unit_type == RADIANS:
-            return self.pitch_degrees * DEGREES_TO_RADIANS
-        else:
-            return self.pitch_degrees
-
-    def get_roll(self, unit_type=RADIANS):
-        if unit_type == RADIANS:
-            return self.roll_degrees * DEGREES_TO_RADIANS
-        else:
-            return self.roll_degrees
+    def is_colliding(self, other_body):
+        # TODO(Austin) - Refactor, this is super ugly
+        a_x1 = self.position.x - (self.width/2)
+        a_x2 = self.position.x + (self.width/2)
+        a_y1 = self.position.y - (self.depth/2)
+        a_y2 = self.position.y + (self.depth/2)
+        a_z1 = self.position.z - (self.height/2)
+        a_z2 = self.position.z + (self.height/2)
+        b_x1 = other_body.position.x - (other_body.width/2)
+        b_x2 = other_body.position.x + (other_body.width/2)
+        b_y1 = other_body.position.y - (other_body.depth/2)
+        b_y2 = other_body.position.y + (other_body.depth/2)
+        b_z1 = other_body.position.z - (other_body.height/2)
+        b_z2 = other_body.position.z + (other_body.height/2)
+        return not a_x2 < b_x1 and \
+            not b_x2 < a_x1 and \
+            not a_y2 < b_y1 and \
+            not b_y2 < a_y1 and \
+            not a_z2 < b_z1 and \
+            not b_z2 < a_z1

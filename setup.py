@@ -7,7 +7,7 @@ with open(path.join(path.abspath(path.dirname(__file__)), 'README.md')) as f:
     long_description = f.read()
 
 setup(
-    name="pyspace-server",
+    name="space",
     version="0.0.1",
     author="Austin Philp",
     author_email="austinphilp@gmail.com",

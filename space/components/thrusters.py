@@ -24,18 +24,17 @@ class Thruster(MovementComponent):
         the acceleration vector, by multiplying this vector by accelleration
         """
 
-        vector = DIRECTIONAL_VECTORS[self.direction]
-        # Rotate by Roll
-        vector = round_point(vector.rotate(self.get_roll(), (1, 0, 0)))
-        # Rotate by Pitch
-        vector = round_point(vector.rotate(self.get_pitch(), (0, 1, 0)))
-        # Rotate by Yaw
-        vector = round_point(vector.rotate(self.get_yaw(), (0, 0, 1)))
-        return vector
+        return self.attached_body.rotate_vector_by_orientation(
+            vector=DIRECTIONAL_VECTORS[self.direction],
+        )
 
     @property
     def attached_body(self):
-        return self.attached_panel.attached_body
+        return getattr(self.attached_panel, 'attached_body', None)
+
+    @attached_body.setter
+    def attached_body(self, body):
+        pass
 
     @property
     def acceleration_vector(self):
@@ -47,11 +46,17 @@ class Thruster(MovementComponent):
     def current_acceleration(self):
         return self.power_adjusted_current_force/self.attached_body.mass
 
-    def get_roll(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_roll(*args, **kwargs)
-
-    def get_yaw(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_yaw(*args, **kwargs)
-
-    def get_pitch(self, *args, **kwargs):
-        return self.attached_panel.attached_body.get_pitch(*args, **kwargs)
+    @property
+    def status_report(self):
+        return {
+            **super().status_report,
+            "direction": self.direction,
+            "acceleration_vector": {
+                "x": self.acceleration_vector.x,
+                "y": self.acceleration_vector.y,
+                "z": self.acceleration_vector.z,
+            },
+            "current_acceleration": self.current_acceleration,
+            "current_force": self.power_adjusted_current_force,
+            "mass": self.mass
+        }

@@ -12,3 +12,11 @@ class Reactor(PoweredComponent):
     @property
     def current_output(self):
         return self.initial_max_output * self.integrity
+
+    @property
+    def status_report(self):
+        return {
+            **super().status_report,
+            "max_output": self.initial_max_output,
+            "current_output": self.current_output
+        }
