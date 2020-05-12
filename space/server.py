@@ -1,7 +1,12 @@
+import sys
+from os.path import dirname
+sys.path.append("../" + dirname(__file__))
+
+from asyncio import new_event_loop, set_event_loop, start_unix_server
 import json
 import os
-import socket
 from system import System
+from threading import Thread
 from time import sleep
 
 
@@ -19,71 +24,70 @@ def _create_test_ship():
         directions.YAW: 0,
         directions.ROLL: 0,
         directions.PITCH: 0,
-        "reactors": [Reactor(max_output=20)],
+        "reactors": [Reactor(max_output=1000)],
         "reaction_wheels": [
             ReactionWheel(
                 axis=axis,
-                rotation=directions.FORWARD,
-                max_force=15
+                rotation=directions.CLOCKWISE,
+                max_force=750
+            )
+            for axis in [directions.YAW, directions.ROLL, directions.PITCH]
+        ] + [
+            ReactionWheel(
+                axis=axis,
+                rotation=directions.COUNTER_CLOCKWISE,
+                max_force=750
             )
             for axis in [directions.YAW, directions.ROLL, directions.PITCH]
         ],
         **{
             F"{direction}_panel": ShipPanel(
                 side=directions.COUNTER_DIRECTIONS[direction],
-                thrusters=[Thruster(max_force=10.0)],
+                thrusters=[Thruster(max_force=50.0)],
             ) for direction in directions.DIRECTIONS
         }
     })
 
 
-def _read_commands_from_socket(s):
-    commands = []
-    connections = []
-    s.listen(200)
-    try:
-        conn, _ = s.accept()
-    except BlockingIOError:
-        return [], []
-    conn.setblocking(False)
-    while conn:
-        connections.append(conn)
-        try:
-            command_payload = conn.recv(256)
-        except BlockingIOError:
-            break
-        if not command_payload:
-            break
-        else:
-            cmd = Command.Parse(command_payload, connection=conn)
-            commands.append(cmd)
-    return commands, connections
+class CommandServer(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+
+    def run(self):
+        self._command_server()
+
+    def _command_server(self):
+        if os.path.exists("/home/austin/uds_socket"):
+            os.remove("/home/austin/uds_socket")
+        loop = new_event_loop()
+        set_event_loop(loop)
+        loop.create_task(start_unix_server(
+            self._read_commands_from_socket,
+            "/home/austin/uds_socket"
+        ))
+        loop.run_forever()
+
+    async def _read_commands_from_socket(self, reader, writer):
+        request = (await reader.read(256))
+        cmd = Command.Parse(request)
+        response = cmd.exec(system=system)
+        payload = json.dumps(response.value).encode()
+        writer.write(
+            cmd.command_id.encode().ljust(8, b"\0")
+            + str(len(payload)).encode().ljust(8, b"\0")
+            + payload
+        )
+        await writer.drain()
+        writer.close()
 
 
+system = System(ships=[_create_test_ship()])
 if __name__ == "__main__":
-    system = System(ships=[_create_test_ship()])
     i = 0
-    if os.path.exists("/home/austin/uds_socket"):
-        os.remove("/home/austin/uds_socket")
-    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
-        s.setblocking(False)
-        s.bind("/home/austin/uds_socket")
-        while True:
-            print("=================== Loop {} ===================".format(i))
-            print("Reading new commands form sockets")
-            commands, connections = _read_commands_from_socket(s)
-            print("Executing tick")
-            responses = system.perform_tick(commands)
-            print("sending responses")
-            for response in responses:
-                payload = json.dumps(response.value).encode()
-                response.connection.send(
-                    response.command_id.encode().ljust(8, b"\0")
-                    + str(len(payload)).encode().ljust(8, b"\0")
-                    + payload
-                )
-            for conn in connections:
-                conn.close()
-            print("closed all connections")
-            i += 1
-            sleep(0.1)
+    thread = CommandServer()
+    thread.start()
+    while True:
+        print("=================== Loop {} ===================".format(i))
+        responses = system.perform_tick()
+        i += 1
+        sleep(0.05)
