@@ -21,6 +21,9 @@ class Response(object):
     def connection(self):
         return self.command.connection
 
+    def __str__(self):
+        return F"{self.command.command} - {self.value}"
+
 
 class Command(IdentityMixin):
     def __init__(self, object_id, command, raw_arguments):
@@ -31,7 +34,8 @@ class Command(IdentityMixin):
         self.command_id = self.object_id
 
     @classmethod
-    def Parse(self, command_block, connection=None):
+    def Parse(self, command_block):
+        self.command_block = command_block
         object_id = command_block[0:8].rstrip(b"\0").decode('utf-8')
         command = command_block[8:32].rstrip(b"\0").decode('utf-8')
         _raw_args = command_block[32:256].rstrip(b"\0").decode('utf-8')
@@ -45,9 +49,7 @@ class Command(IdentityMixin):
             cls = SetFocus
         if command == "status_report":
             cls = StatusReport
-        instance = cls(object_id, command, _raw_args)
-        instance.connection = connection
-        return instance
+        return cls(object_id, command, _raw_args)
 
     def _validate(self):
         if self.object.__class__ not in self.ALLOWED_OBJECTS:
@@ -84,6 +86,8 @@ class SetThrottle(Command):
 
     def exec(self, system):
         super().exec(system)
+        if self.throttle > 0:
+            print(F"Setting throttle from {self.object.throttle} to {self.throttle}")  # noqa
         self.object.throttle = self.throttle
         return Response(self, self.object.status_report)
 
