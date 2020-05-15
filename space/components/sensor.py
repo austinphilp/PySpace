@@ -33,9 +33,8 @@ class Sensor(OrientationMixin, PoweredComponent):
     @property
     def range(self):
         return (
-            self.base_range *
-            self.focus/9 *
-            getattr(self.attached_body, 'overall_performance_modifier', 1)
+            (self.base_range / (self.focus/89))
+            * getattr(self.attached_body, 'overall_performance_modifier', 1)
         )
 
     @property
@@ -73,6 +72,9 @@ class Sensor(OrientationMixin, PoweredComponent):
             self.range
         )
         # TODO(Austin) - Fix this on the actual library
+        # TODO(Austin) - Figure out what the hell the above comment means...
+        # I think it has something to do with the wonky way I'm initializing
+        # this vector
         x = Vector.from_list((self.position - body.position).to_list())
         dist_along_axis = x.dot(self.unit_vector)
         if 0 <= dist_along_axis <= target_distance:
@@ -82,5 +84,5 @@ class Sensor(OrientationMixin, PoweredComponent):
             orth_distance = (x - self.unit_vector.multiply(
                 dist_along_axis)
             ).magnitude()
-            return orth_distance < cone_radius
+            return orth_distance < cone_radius and x.magnitude() < self.range
         return False
