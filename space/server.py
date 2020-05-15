@@ -41,7 +41,7 @@ def _create_asteroids():
             yaw_speed=normalvariate(0.0, 0.05),
             pitch_speed=normalvariate(0.0, 0.05),
             roll_speed=normalvariate(0.0, 0.05),
-        ) for _ in range(int(normalvariate(500, 100)))
+        ) for _ in range(int(normalvariate(1000, 100)))
     ]
 
 
