@@ -181,6 +181,7 @@ class PingSensor(Command):
             {
                 "detectable_bodies": [
                     {
+                        "object_id": body.object_id,
                         "vector": {
                             "x": body.current_vector.x,
                             "y": body.current_vector.y,
