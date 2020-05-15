@@ -67,7 +67,7 @@ def _create_test_ship():
             F"{direction}_panel": ShipPanel(
                 side=directions.COUNTER_DIRECTIONS[direction],
                 thrusters=[Thruster(max_force=50.0)],
-                sensors=[Sensor(base_range=500.0, focus=90)],
+                sensors=[Sensor(base_range=1500.0, focus=90)],
             ) for direction in directions.DIRECTIONS
         }
     })

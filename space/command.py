@@ -191,6 +191,11 @@ class PingSensor(Command):
                             "y": body.current_acceleration.y,
                             "z": body.current_acceleration.z,
                         },
+                        "dimmensions": {
+                            "width": body.width,
+                            "height": body.height,
+                            "depth": body.depth,
+                        },
                         "position": {
                             "x": body.position.x,
                             "y": body.position.y,

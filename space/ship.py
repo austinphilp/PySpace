@@ -49,7 +49,7 @@ class Ship(Body, OrientationMixin, IdentityMixin):
 
     def _calculate_dimensions(self):
         # For now all ships will simply be squares
-        width = self.mass/1000
+        width = self.mass/250
         height = width
         depth = width
         return height, width, depth
@@ -124,6 +124,11 @@ class Ship(Body, OrientationMixin, IdentityMixin):
                 "x": self.position.x,
                 "y": self.position.y,
                 "z": self.position.z,
+            },
+            "dimmensions": {
+                "width": self.width,
+                "height": self.height,
+                "depth": self.depth,
             },
             "orientation": {
                 "pitch_degrees": self.get_pitch(DEGREES),

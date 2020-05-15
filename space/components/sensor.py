@@ -67,22 +67,23 @@ class Sensor(OrientationMixin, PoweredComponent):
         return slope * Vector.from_points(self.position, point).magnitude()
 
     def can_detect(self, body):
-        target_distance = min(
-            get_distance(body.position, self.position),
-            self.range
-        )
+        target_distance = get_distance(body.position, self.position)
+
         # TODO(Austin) - Fix this on the actual library
         # TODO(Austin) - Figure out what the hell the above comment means...
         # I think it has something to do with the wonky way I'm initializing
         # this vector
         x = Vector.from_list((self.position - body.position).to_list())
+        # Exit early if totally out of range
+        if target_distance > self.range:
+            return False
         dist_along_axis = x.dot(self.unit_vector)
-        if 0 <= dist_along_axis <= target_distance:
+        if 0 <= dist_along_axis <= min(target_distance, self.range):
             cone_radius = self.get_sensor_radius_at_point(
                 self.unit_vector.multiply(dist_along_axis)
             )
             orth_distance = (x - self.unit_vector.multiply(
                 dist_along_axis)
             ).magnitude()
-            return orth_distance < cone_radius and x.magnitude() < self.range
+            return orth_distance < cone_radius
         return False

@@ -12,7 +12,7 @@ class Asteroid(Body, IdentityMixin):
         self.mass = kwargs.get('mass')
         self.current_vector = kwargs.get('vector')
         # TODO(Austin) - Density of materials Determines size according to mass
-        self.height = self.mass/10 * normalvariate(1, 0.2)
-        self.width = self.mass/10 * normalvariate(1, 0.2)
-        self.depth = self.mass/10 * normalvariate(1, 0.2)
+        self.height = self.mass/250 * normalvariate(1, 0.2)
+        self.width = self.mass/250 * normalvariate(1, 0.2)
+        self.depth = self.mass/250 * normalvariate(1, 0.2)
         self.current_acceleration = Vector(0, 0, 0)
