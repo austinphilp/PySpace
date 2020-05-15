@@ -1,29 +1,102 @@
-import sys
-from os.path import dirname
-sys.path.append("../" + dirname(__file__))
-
 from asyncio import new_event_loop, set_event_loop, start_unix_server
 import json
 import os
+from random import normalvariate, uniform, choice
 from system import System
 from threading import Thread
 from time import sleep
+import sys
+from os.path import dirname
 
+sys.path.append("../" + dirname(__file__))
+
+from vectors import Point, Vector
 
 from space.command import Command
-from space.components import ReactionWheel
-from space.components import Reactor
-from space.components import Thruster
+from space.components import ReactionWheel, Reactor, Sensor, Thruster
 from space.constants import directions
-from space.ship import Ship
-from space.ship import ShipPanel
+from space.ship import Ship, ShipPanel
+from space.asteroid import Asteroid
+
+
+def _create_random_position(avoid_center=True):
+    return Point(
+        *[
+            uniform((100 if avoid_center else 0), 10000) * choice([-1, 1])
+            for _ in range(3)
+        ]
+    )
+
+
+def _create_random_vector():
+    return Vector(*[uniform(-0.1, 0.1) for _ in range(3)])
+
+
+def _create_asteroids():
+    return [
+        Asteroid(
+            position=Point(1000, 400, 0),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+        Asteroid(
+            position=Point(-1000, 0, 0),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+        Asteroid(
+            position=Point(0, 1000, 0),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+        Asteroid(
+            position=Point(0, -1000, 0),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+        Asteroid(
+            position=Point(0, 0, 1000),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+        Asteroid(
+            position=Point(0, 0, -1000),
+            vector=_create_random_vector(),
+            mass=max(normalvariate(10000, 2500), 2500),
+            yaw_speed=normalvariate(0.0, 0.05),
+            pitch_speed=normalvariate(0.0, 0.05),
+            roll_speed=normalvariate(0.0, 0.05),
+        ),
+    ]
+    # return [
+    #     Asteroid(
+    #         position=_create_random_position(),
+    #         vector=_create_random_vector(),
+    #         mass=max(normalvariate(10000, 2500), 2500),
+    #         yaw_speed=normalvariate(0.0, 0.05),
+    #         pitch_speed=normalvariate(0.0, 0.05),
+    #         roll_speed=normalvariate(0.0, 0.05),
+    #     ) for _ in range(int(normalvariate(500, 100)))
+    # ]
 
 
 def _create_test_ship():
     return Ship(**{
-        directions.YAW: 0,
-        directions.ROLL: 0,
-        directions.PITCH: 0,
         "reactors": [Reactor(max_output=1000)],
         "reaction_wheels": [
             ReactionWheel(
@@ -44,6 +117,7 @@ def _create_test_ship():
             F"{direction}_panel": ShipPanel(
                 side=directions.COUNTER_DIRECTIONS[direction],
                 thrusters=[Thruster(max_force=50.0)],
+                sensors=[Sensor(base_range=500.0, focus=90)],
             ) for direction in directions.DIRECTIONS
         }
     })
@@ -81,7 +155,7 @@ class CommandServer(Thread):
         writer.close()
 
 
-system = System(ships=[_create_test_ship()])
+system = System(ships=[_create_test_ship()], inert_bodies=_create_asteroids())
 if __name__ == "__main__":
     i = 0
     thread = CommandServer()
@@ -90,4 +164,4 @@ if __name__ == "__main__":
         print("=================== Loop {} ===================".format(i))
         responses = system.perform_tick()
         i += 1
-        sleep(0.05)
+        sleep(1.05)
