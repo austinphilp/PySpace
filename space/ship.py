@@ -142,6 +142,7 @@ class Ship(Body, OrientationMixin, IdentityMixin):
             "panels": [p.status_report for p in self.panels.values()],
             "reactors": [r.status_report for r in self.reactors],
             "thrusters": [t.status_report for t in self.thrusters],
+            "sensors": [t.status_report for t in self.sensors],
             "reaction_wheels": [w.status_report for w in self.reaction_wheels],
             "power_available": self.power_available,
             "power_consumption": self.power_consumption,

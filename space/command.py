@@ -4,6 +4,7 @@ from space.components import (
     Reactor,
     Sensor
 )
+from space.constants.math import DEGREES
 from space.exceptions import InvalidObjectForCommand, InputValidationError
 from space.mixins import IdentityMixin
 
@@ -47,6 +48,8 @@ class Command(IdentityMixin):
             cls = SetRotation
         if command == "set_focus":
             cls = SetFocus
+        if command == "sensor_ping":
+            cls = PingSensor
         if command == "status_report":
             cls = StatusReport
         return cls(object_id, command, _raw_args)
@@ -162,3 +165,50 @@ class StatusReport(Command):
     def exec(self, system):
         super().exec(system)
         return Response(self, (self.object or system).status_report)
+
+
+class PingSensor(Command):
+    def _parse_args(self):
+        pass
+
+    def _validate(self):
+        pass
+
+    def exec(self, system):
+        super().exec(system)
+        return Response(
+            self,
+            {
+                "detectable_bodies": [
+                    {
+                        "vector": {
+                            "x": body.current_vector.x,
+                            "y": body.current_vector.y,
+                            "z": body.current_vector.z,
+                        },
+                        "acceleration": {
+                            "x": body.current_acceleration.x,
+                            "y": body.current_acceleration.y,
+                            "z": body.current_acceleration.z,
+                        },
+                        "position": {
+                            "x": body.position.x,
+                            "y": body.position.y,
+                            "z": body.position.z,
+                        },
+                        "orientation": {
+                            "pitch_degrees": body.get_pitch(DEGREES),
+                            "roll_degrees": body.get_roll(DEGREES),
+                            "yaw_degrees": body.get_yaw(DEGREES),
+                        },
+                        "orientation_speed": {
+                            "pitch_speed": body.pitch_speed,
+                            "roll_speed": body.roll_speed,
+                            "yaw_speed": body.yaw_speed,
+                        }
+                    }
+                    for body in system.bodies
+                    if self.object.can_detect(body)
+                ]
+            }
+        )
