@@ -114,4 +114,4 @@ if __name__ == "__main__":
         print("=================== Loop {} ===================".format(i))
         responses = system.perform_tick()
         i += 1
-        sleep(1.05)
+        sleep(0.05)
