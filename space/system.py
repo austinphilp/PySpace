@@ -1,7 +1,12 @@
 class System(object):
-    def __init__(self, ships):
+    def __init__(self, ships, inert_bodies):
         # TODO(Austin) - Astronomical Body Generation.
         self.ships = ships
+        self.inert_bodies = inert_bodies
+
+    @property
+    def bodies(self):
+        return self.ships + self.inert_bodies
 
     def perform_tick(self):
         for ship in self.ships:
