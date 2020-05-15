@@ -9,9 +9,9 @@ class System(object):
         return self.ships + self.inert_bodies
 
     def perform_tick(self):
-        for ship in self.ships:
-            print("Executing tick")
-            ship.apply_acceleration_vectors()
+        print("Executing tick")
+        for body in self.inert_bodies + self.ships:
+            body.apply_acceleration_vectors()
 
     def get_object_by_id(self, object_id):
         for ship in self.ships:
