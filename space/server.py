@@ -35,64 +35,14 @@ def _create_random_vector():
 def _create_asteroids():
     return [
         Asteroid(
-            position=Point(1000, 400, 0),
+            position=_create_random_position(),
             vector=_create_random_vector(),
             mass=max(normalvariate(10000, 2500), 2500),
             yaw_speed=normalvariate(0.0, 0.05),
             pitch_speed=normalvariate(0.0, 0.05),
             roll_speed=normalvariate(0.0, 0.05),
-        ),
-        Asteroid(
-            position=Point(-1000, 0, 0),
-            vector=_create_random_vector(),
-            mass=max(normalvariate(10000, 2500), 2500),
-            yaw_speed=normalvariate(0.0, 0.05),
-            pitch_speed=normalvariate(0.0, 0.05),
-            roll_speed=normalvariate(0.0, 0.05),
-        ),
-        Asteroid(
-            position=Point(0, 1000, 0),
-            vector=_create_random_vector(),
-            mass=max(normalvariate(10000, 2500), 2500),
-            yaw_speed=normalvariate(0.0, 0.05),
-            pitch_speed=normalvariate(0.0, 0.05),
-            roll_speed=normalvariate(0.0, 0.05),
-        ),
-        Asteroid(
-            position=Point(0, -1000, 0),
-            vector=_create_random_vector(),
-            mass=max(normalvariate(10000, 2500), 2500),
-            yaw_speed=normalvariate(0.0, 0.05),
-            pitch_speed=normalvariate(0.0, 0.05),
-            roll_speed=normalvariate(0.0, 0.05),
-        ),
-        Asteroid(
-            position=Point(0, 0, 1000),
-            vector=_create_random_vector(),
-            mass=max(normalvariate(10000, 2500), 2500),
-            yaw_speed=normalvariate(0.0, 0.05),
-            pitch_speed=normalvariate(0.0, 0.05),
-            roll_speed=normalvariate(0.0, 0.05),
-        ),
-        Asteroid(
-            position=Point(0, 0, -1000),
-            vector=_create_random_vector(),
-            mass=max(normalvariate(10000, 2500), 2500),
-            yaw_speed=normalvariate(0.0, 0.05),
-            pitch_speed=normalvariate(0.0, 0.05),
-            roll_speed=normalvariate(0.0, 0.05),
-        ),
+        ) for _ in range(int(normalvariate(500, 100)))
     ]
-    # return [
-    #     Asteroid(
-    #         position=_create_random_position(),
-    #         vector=_create_random_vector(),
-    #         mass=max(normalvariate(10000, 2500), 2500),
-    #         yaw_speed=normalvariate(0.0, 0.05),
-    #         pitch_speed=normalvariate(0.0, 0.05),
-    #         roll_speed=normalvariate(0.0, 0.05),
-    #     ) for _ in range(int(normalvariate(500, 100)))
-    # ]
 
 
 def _create_test_ship():
