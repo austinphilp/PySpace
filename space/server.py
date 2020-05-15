@@ -47,7 +47,7 @@ def _create_asteroids():
 
 def _create_test_ship():
     return Ship(**{
-        "reactors": [Reactor(max_output=1000)],
+        "reactors": [Reactor(max_output=2000)],
         "reaction_wheels": [
             ReactionWheel(
                 axis=axis,
