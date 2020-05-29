@@ -176,6 +176,17 @@ class PingSensor(Command):
 
     def exec(self, system):
         super().exec(system)
+        bodies = {}
+        # TODO Adapt to get sensors from ship, cache
+        for sensor in self.object.ship.sensors:
+            _bodies = {}
+            if sensor.detected_bodies is None:
+                _bodies = {
+                    body.object_id: body
+                    for body in system.bodies if sensor.can_detect(body)
+                }
+                sensor.detected_bodies = _bodies
+            bodies.update(_bodies or sensor.detected_bodies)
         return Response(
             self,
             {
@@ -212,9 +223,7 @@ class PingSensor(Command):
                             "roll_speed": body.roll_speed,
                             "yaw_speed": body.yaw_speed,
                         }
-                    }
-                    for body in system.bodies
-                    if self.object.can_detect(body)
+                    } for body in bodies.values()
                 ]
             }
         )

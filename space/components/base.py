@@ -12,6 +12,14 @@ class BaseComponent(ABC, IdentityMixin):
         self.attached_panel = kwargs.get('attached_panel')
 
     @property
+    def ship(self):
+        return self.attached_panel.ship
+
+    @property
+    def system(self):
+        return self.ship.system
+
+    @property
     def is_active(self):
         return self.integrity > 0
 

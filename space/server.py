@@ -17,6 +17,7 @@ from space.components import ReactionWheel, Reactor, Sensor, Thruster
 from space.constants import directions
 from space.ship import Ship, ShipPanel
 from space.asteroid import Asteroid
+from space.utils.misc import GameClock
 
 
 def _create_random_position(avoid_center=True):
@@ -106,12 +107,13 @@ class CommandServer(Thread):
 
 
 system = System(ships=[_create_test_ship()], inert_bodies=_create_asteroids())
+system.clock = GameClock
 if __name__ == "__main__":
-    i = 0
+    GameClock()
     thread = CommandServer()
     thread.start()
     while True:
-        print("=================== Loop {} ===================".format(i))
+        print("=================== Loop {} ===================".format(system.clock.time()))
         responses = system.perform_tick()
-        i += 1
+        system.clock.next()
         sleep(0.05)

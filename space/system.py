@@ -2,14 +2,21 @@ class System(object):
     def __init__(self, ships, inert_bodies):
         # TODO(Austin) - Astronomical Body Generation.
         self.ships = ships
+        for ship in self.ships:
+            ship.system = self
         self.inert_bodies = inert_bodies
+        for body in self.inert_bodies:
+            body.system = self
 
     @property
     def bodies(self):
         return self.ships + self.inert_bodies
 
+    def time(self):
+        return self.clock.time()
+
     def perform_tick(self):
-        print("Executing tick")
+        # print("Executing tick")
         for body in self.inert_bodies + self.ships:
             body.apply_acceleration_vectors()
 

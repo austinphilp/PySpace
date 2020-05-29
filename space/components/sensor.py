@@ -6,6 +6,7 @@ from space.components.base import PoweredComponent
 from space.constants.directions import DIRECTIONAL_VECTORS
 from space.constants.math import DEGREES_TO_RADIANS, DEGREES, RADIANS
 from space.mixins import OrientationMixin
+from space.utils.misc import ExpirableAttribute
 from space.utils.sanitization import (
     sanitize_sensor_focus,
 )
@@ -13,6 +14,8 @@ from space.utils.vectors import get_distance, rotate_vector
 
 
 class Sensor(OrientationMixin, PoweredComponent):
+    detected_bodies = ExpirableAttribute()
+
     def __init__(self, base_range, *args, **kwargs):
         super(Sensor, self).__init__(self, *args, **kwargs)
         self.base_range = base_range
@@ -68,15 +71,14 @@ class Sensor(OrientationMixin, PoweredComponent):
 
     def can_detect(self, body):
         target_distance = get_distance(body.position, self.position)
-
+        # Exit early if totally out of range
+        if target_distance > self.range:
+            return False
         # TODO(Austin) - Fix this on the actual library
         # TODO(Austin) - Figure out what the hell the above comment means...
         # I think it has something to do with the wonky way I'm initializing
         # this vector
         x = Vector.from_list((self.position - body.position).to_list())
-        # Exit early if totally out of range
-        if target_distance > self.range:
-            return False
         dist_along_axis = x.dot(self.unit_vector)
         if 0 <= dist_along_axis <= min(target_distance, self.range):
             cone_radius = self.get_sensor_radius_at_point(
