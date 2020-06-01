@@ -27,9 +27,10 @@ class Body(OrientationMixin):
     def perform_collision(self, other_body):
         force = other_body.mass * other_body.current_vector.magnitude()
         self.integrity -= force/self.mass
+        # TODO(Austin) - Impart collision vector
 
     def is_colliding(self, other_body):
-        # TODO(Austin) - Refactor, this is super ugly
+        # TODO(Austin) - Refactor, this code is bad and you should feel bad
         a_x1 = self.position.x - (self.width/2)
         a_x2 = self.position.x + (self.width/2)
         a_y1 = self.position.y - (self.depth/2)
