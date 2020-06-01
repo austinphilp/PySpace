@@ -1,3 +1,6 @@
+from space.utils.vectors import get_distance
+
+
 class System(object):
     def __init__(self, ships, inert_bodies):
         # TODO(Austin) - Astronomical Body Generation.
@@ -19,6 +22,13 @@ class System(object):
         # print("Executing tick")
         for body in self.inert_bodies + self.ships:
             body.apply_acceleration_vectors()
+            near_bodies = [
+                other for other in (self.inert_bodies + self.ships)
+                if get_distance(other, body) < 200
+            ]
+            for other_body in near_bodies:
+                body.is_colliding(other_body)
+                body.perform_collision(other_body)
 
     def get_object_by_id(self, object_id):
         for ship in self.ships:
