@@ -27,6 +27,25 @@ class ExpirableAttribute(object):
         self._value = value
 
 
+class CacheMap(object):
+    def __init__(self, expiry=3):
+        self._data = {}
+        self._expiry_map = {}
+        self._expiry = expiry
+        self._tick = 0
+
+    def __setitem__(self, key, val):
+        if key not in self._data or self._expiry_map[key] <= self._tick:
+            self._data[key] = val()
+            self._expiry_map[key] = self._tick + self._expiry
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def tick(self):
+        self._tick += 1
+
+
 class GameClock(object):
     instance = None
 
