@@ -1,3 +1,4 @@
+from space.utils.misc import CacheMap
 from space.utils.vectors import get_distance
 
 
@@ -10,6 +11,7 @@ class System(object):
         self.inert_bodies = inert_bodies
         for body in self.inert_bodies:
             body.system = self
+        self._near_object_map = CacheMap(expiry=50)
 
     @property
     def bodies(self):
@@ -22,13 +24,16 @@ class System(object):
         # print("Executing tick")
         for body in self.inert_bodies + self.ships:
             body.apply_acceleration_vectors()
-            near_bodies = [
+            self._near_object_map[id(body)] = lambda: [
                 other for other in (self.inert_bodies + self.ships)
-                if get_distance(other, body) < 200
+                if get_distance(other.position, body.position) < 200
             ]
-            for other_body in near_bodies:
-                body.is_colliding(other_body)
-                body.perform_collision(other_body)
+            if self.time() % 5 == 0:
+                for other_body in self._near_object_map[id(body)]:
+                    if other_body is not body and body.is_colliding(other_body):  # noqa
+                        print(F"Collision detected between {body} and {other_body}")  # noqa
+                        body.perform_collision(other_body)
+        self._near_object_map.tick()
 
     def get_object_by_id(self, object_id):
         for ship in self.ships:
