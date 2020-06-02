@@ -186,7 +186,7 @@ class PingSensor(Command):
                     for body in system.bodies if sensor.can_detect(body)
                 }
                 sensor.detected_bodies = _bodies
-            bodies.update(_bodies or sensor.detected_bodies)
+            bodies.update(_bodies or sensor.detected_bodies or {})
         return Response(
             self,
             {
