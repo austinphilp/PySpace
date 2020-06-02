@@ -10,7 +10,7 @@ class Asteroid(Body, IdentityMixin):
         super(Asteroid, self).__init__(*args, **kwargs)
         OrientationMixin.__init__(self, *args, **kwargs)
         self.mass = kwargs.get('mass')
-        self.current_vector = kwargs.get('vector')
+        self.current_vector = kwargs.get('vector', Vector(0, 0, 0))
         # TODO(Austin) - Density of materials Determines size according to mass
         self.height = self.mass/250 * normalvariate(1, 0.2)
         self.width = self.mass/250 * normalvariate(1, 0.2)
