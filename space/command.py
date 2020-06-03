@@ -1,4 +1,5 @@
 from space.components import (
+    MiningLaser,
     ReactionWheel,
     Thruster,
     Reactor,
@@ -7,6 +8,7 @@ from space.components import (
 from space.constants.math import DEGREES
 from space.exceptions import InvalidObjectForCommand, InputValidationError
 from space.mixins import IdentityMixin
+from space.utils.vectors import get_distance
 
 
 class Response(object):
@@ -165,6 +167,23 @@ class StatusReport(Command):
     def exec(self, system):
         super().exec(system)
         return Response(self, (self.object or system).status_report)
+
+
+class SetTarget(Command):
+    ALLOWED_OBJECTS = [MiningLaser]
+
+    def _parse_args(self):
+        self.target_id = self._raw_args
+
+    def exec(self, system):
+        super().exec(system)
+        trgt = system.get_object_by_id(self.target_id)
+        if trgt is None:
+            raise InputValidationError("Target doesn't exist")
+        if get_distance(trgt.position, self.object.position):
+            raise InputValidationError("Target out of range")
+        self.object.set_target()
+        return Response(self, self.object.status_report)
 
 
 class PingSensor(Command):
