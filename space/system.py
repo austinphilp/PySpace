@@ -1,5 +1,5 @@
 from space.utils.misc import CacheMap
-from space.utils.vectors import get_distance
+from space.utils.vectors import square_distance
 
 
 class System(object):
@@ -26,8 +26,11 @@ class System(object):
             body.apply_acceleration_vectors()
             self._near_object_map[id(body)] = lambda: [
                 other for other in (self.inert_bodies + self.ships)
-                if get_distance(other.position, body.position) < 200
+                if square_distance(other.position, body.position) < 40000
             ]
+            # TODO(Austin) - Only check collisions on ships. I will need to
+            # modify body.perform_collision to affect the velocity and whatnot
+            # of the other body as well.
             if self.time() % 5 == 0:
                 for other_body in self._near_object_map[id(body)]:
                     if other_body is not body and body.is_colliding(other_body):  # noqa
