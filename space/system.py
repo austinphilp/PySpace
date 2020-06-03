@@ -1,3 +1,4 @@
+from space.ship import Ship
 from space.utils.misc import CacheMap
 from space.utils.vectors import square_distance
 
@@ -11,7 +12,7 @@ class System(object):
         self.inert_bodies = inert_bodies
         for body in self.inert_bodies:
             body.system = self
-        self._near_object_map = CacheMap(expiry=50)
+        self._near_object_map = CacheMap(expiry=20)
 
     @property
     def bodies(self):
@@ -22,18 +23,20 @@ class System(object):
 
     def perform_tick(self):
         # print("Executing tick")
+        previous_collisions = set()
         for body in self.inert_bodies + self.ships:
             body.apply_acceleration_vectors()
-            self._near_object_map[id(body)] = lambda: [
-                other for other in (self.inert_bodies + self.ships)
-                if square_distance(other.position, body.position) < 40000
-            ]
-            # TODO(Austin) - Only check collisions on ships. I will need to
-            # modify body.perform_collision to affect the velocity and whatnot
-            # of the other body as well.
-            if self.time() % 5 == 0:
+            # TODO(Austin) - Add collission detection for asteroid-asteroid
+            # collissions. Will need to be very computationally simple.
+            if isinstance(body, Ship) and body not in previous_collisions:
+                self._near_object_map[id(body)] = lambda: [
+                    other for other in (self.inert_bodies + self.ships)
+                    if (square_distance(other.position, body.position) < 40000
+                        and other is not body)
+                ]
                 for other_body in self._near_object_map[id(body)]:
                     if other_body is not body and body.is_colliding(other_body):  # noqa
+                        previous_collisions.add(other_body)
                         print(F"Collision detected between {body} and {other_body}")  # noqa
                         body.perform_collision(other_body)
         self._near_object_map.tick()
