@@ -49,9 +49,9 @@ class MiningLaser(PoweredComponent):
         # per tick
         target_dist = get_distance(
             self._target.position,
-            self.position.attached_body
+            self.attached_body.position
         )
-        if target_dist > self.current_range:
+        if target_dist > self.current_range or self._target.mass <= 0:
             self.clear_target()
         return self._target
 
@@ -59,12 +59,18 @@ class MiningLaser(PoweredComponent):
         self._target = None
 
     def set_target(self, target):
-        self._target = target
+        target_dist = get_distance(
+            self._target.position,
+            self.attached_body.position
+        )
+        if target_dist < self.current_range and self._target.mass > 0:
+            self._target = target
 
     def perform_tick(self):
-        chunk = 0.1
-        self.current_target.mass -= chunk
-        if self.current_target.mass <= 0:
-            self.clear_target()
-        # TODO(Austin) - Add capacity to storage
-        self.attached_body.storage += chunk
+        target = self.current_target
+        if target is not None:
+            target.mass -= self.mine_rate
+            if target.mass <= 0:
+                self.clear_target()
+            # TODO(Austin) - Add capacity to storage
+            self.attached_body.storage += self.mine_rate
