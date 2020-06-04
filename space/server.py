@@ -10,14 +10,14 @@ from os.path import dirname
 
 sys.path.append("../" + dirname(__file__))
 
-from vectors import Point, Vector
+from vectors import Point, Vector  # noqa
 
-from space.command import Command
-from space.components import ReactionWheel, Reactor, Sensor, Thruster
-from space.constants import directions
-from space.ship import Ship, ShipPanel
-from space.asteroid import Asteroid
-from space.utils.misc import GameClock
+from space.command import Command  # noqa
+from space.components import ReactionWheel, Reactor, Sensor, Thruster  # noqa
+from space.constants import directions  # noqa
+from space.ship import Ship, ShipPanel  # noqa
+from space.asteroid import Asteroid  # noqa
+from space.utils.misc import GameClock  # noqa
 
 
 def _create_random_position(avoid_center=True):
@@ -113,7 +113,9 @@ if __name__ == "__main__":
     thread = CommandServer()
     thread.start()
     while True:
-        print("=================== Loop {} ===================".format(system.clock.time()))
+        print("=================== Loop {} ===================".format(
+            system.clock.time()
+        ))
         responses = system.perform_tick()
         system.clock.next()
         sleep(0.05)
