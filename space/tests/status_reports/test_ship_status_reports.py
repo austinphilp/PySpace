@@ -1,3 +1,5 @@
+from vectors import Vector
+
 from space.components import Thruster, Reactor
 from space.constants.directions import PORT
 from space.ship import Ship, ShipPanel
@@ -17,7 +19,8 @@ def test_vector_status_report():
         port_panel=ShipPanel(side=PORT, thrusters=[Thruster(max_force=15)]),
         reactors=[Reactor(max_output=100)]
     )
-    assert ship.status_report["vector"] == ship.current_vector, \
+    report_vector = Vector.from_list(ship.status_report["vector"].values())
+    assert report_vector == ship.current_vector, \
         "Thruster vector is innacurately reported"
 
 

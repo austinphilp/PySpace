@@ -21,9 +21,6 @@ def _build_ship(direction, pos, orientation, throttle):
     )
     ship = Ship(**{
         "reactors": [reactor],
-        "width": 5,
-        "height": 5,
-        "depth": 5,
         F"{direction}_panel": panel,
         YAW: orientation.get(YAW, 0),
         ROLL: orientation.get(ROLL, 0),

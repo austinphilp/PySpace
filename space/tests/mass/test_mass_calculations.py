@@ -18,9 +18,11 @@ def test_reaction_wheel_mass_calculation():
     mass = ReactionWheel(max_force=10, axis=directions.ROLL).mass
     assert mass == 10 * KG_PER_RW_ACC
 
+
 def test_reactor_mass_calculation():
     mass = Reactor(max_output=10).mass
     assert mass == 10 * KG_PER_MEGAWATT_REACTOR
+
 
 def test_ship_mass_calculation():
     thruster = Thruster(max_force=10)
@@ -31,5 +33,4 @@ def test_ship_mass_calculation():
             for side in directions.DIRECTIONS
         }
     })
-    assert ship.mass == 3500
-
+    assert ship.mass == 70

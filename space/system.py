@@ -4,7 +4,7 @@ from space.utils.vectors import square_distance
 
 
 class System(object):
-    def __init__(self, ships, inert_bodies):
+    def __init__(self, ships=[], inert_bodies=[]):
         # TODO(Austin) - Astronomical Body Generation.
         self.ships = ships
         for ship in self.ships:

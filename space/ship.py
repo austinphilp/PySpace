@@ -10,7 +10,8 @@ class ShipPanel(IdentityMixin):
         self.side = side
         self.thrusters = kwargs.get('thrusters', [])
         self.sensors = kwargs.get('sensors', [])
-        for component in self.thrusters + self.sensors:
+        self.mining_lasers = kwargs.get('mining_lasers', [])
+        for component in (self.thrusters + self.sensors + self.mining_lasers):
             component.attached_panel = self
         self.mass = sum(t.mass for t in self.thrusters)
 
@@ -46,10 +47,11 @@ class Ship(Body, OrientationMixin, IdentityMixin):
             obj.attached_body = self
         self.mass += self._calculate_mass()
         self.height, self.width, self.depth = self._calculate_dimensions()
+        self.storage = 0
 
     def _calculate_dimensions(self):
         # For now all ships will simply be squares
-        width = self.mass/250
+        width = self.mass/25
         height = width
         depth = width
         return height, width, depth

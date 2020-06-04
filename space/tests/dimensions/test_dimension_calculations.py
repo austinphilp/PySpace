@@ -1,8 +1,6 @@
 from space.components import ReactionWheel
 from space.components import Thruster
 from space.constants import directions
-from space.constants.ratios import KG_PER_RW_ACC
-from space.constants.ratios import KG_PER_THRUSTER_ACC
 from space.ship import Ship
 from space.ship import ShipPanel
 
@@ -16,7 +14,6 @@ def test_ship_dimension_calculation():
             for side in directions.DIRECTIONS
         }
     })
-    assert ship.width == 3.5
-    assert ship.height == 3.5
-    assert ship.depth == 3.5
-
+    assert ship.width == 2.8
+    assert ship.height == 2.8
+    assert ship.depth == 2.8
