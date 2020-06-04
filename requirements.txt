@@ -1,3 +1,4 @@
 pytest
 # mathutils==2.79
 git+https://github.com/austinphilp/vectors
+flake8
