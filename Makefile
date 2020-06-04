@@ -14,4 +14,4 @@ test:
 	venv/bin/python3 -m pytest space/tests
 
 flake8:
-	venv/bin/flake8
+	venv/bin/flake8 space/
