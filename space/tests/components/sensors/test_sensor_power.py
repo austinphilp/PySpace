@@ -1,6 +1,6 @@
 from vectors import Point
-from space.constants.directions import PITCH, ROLL, STARBOARD, YAW
-from space.tests.assertions import _assert_can_detect, _assert_can_not_detect
+from space.constants.directions import STARBOARD
+from space.tests.assertions import _assert_can_not_detect
 
 
 def test_cant_sense_out_of_power():
