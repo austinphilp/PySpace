@@ -1,8 +1,6 @@
-from space.components import ReactionWheel
 from space.components import Reactor
 from space.components import Thruster
 from space.constants import directions
-from space.constants import math
 from space.ship import Ship
 from space.ship import ShipPanel
 

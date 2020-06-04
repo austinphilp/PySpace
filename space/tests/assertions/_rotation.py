@@ -1,9 +1,7 @@
 from space.components import ReactionWheel
-from space.components import Thruster
 from space.constants import directions
 from space.constants import math
 from space.ship import Ship
-from space.ship import ShipPanel
 
 
 def _test_rotation(direction, axis, expected_orientation={}, keep_mass=True):

@@ -42,7 +42,8 @@ def _get_sensors_for_assertion(ship_orientation={},
 
 def _assert_can_detect(target_pos, *args, **kwargs):
     if kwargs.pop('test', False):
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
     target = Body(position=target_pos)
     sensors = _get_sensors_for_assertion(*args, **kwargs)
     assert any(s.can_detect(target) for s in sensors)
@@ -50,7 +51,8 @@ def _assert_can_detect(target_pos, *args, **kwargs):
 
 def _assert_can_not_detect(target_pos, *args, **kwargs):
     if kwargs.pop('test', False):
-        import pdb; pdb.set_trace()
+        import pdb
+        pdb.set_trace()
     target = Body(position=target_pos)
     sensors = _get_sensors_for_assertion(*args, **kwargs)
     assert all(not s.can_detect(target) for s in sensors)
