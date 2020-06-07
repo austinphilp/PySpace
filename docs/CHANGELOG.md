@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 # [unreleased]
 ## Added
  - Collision detection
+ - Mining v0 - A bare minimum implementation of mining, basically just
+   teleports mass from asteroids into a "storage" attribute of the ship. This
+   will later be expanded using a proper laser and drones. But for those we'll
+   need factories and drones.
 
 # [0.1.0]
 ## Added
