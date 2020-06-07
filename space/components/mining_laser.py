@@ -26,10 +26,13 @@ class MiningLaser(PoweredComponent):
 
     @property
     def range(self):
-        return (
-            self.base_range
-            * getattr(self.attached_body, 'overall_performance_modifier', 1)
-        )
+        if self.powered_on is True:
+            return (
+                self.base_range *
+                getattr(self.attached_body, 'overall_performance_modifier', 1)
+            )
+        else:
+            return 0
 
     @property
     def status_report(self):
@@ -51,7 +54,7 @@ class MiningLaser(PoweredComponent):
             self._target.position,
             self.attached_body.position
         )
-        if target_dist > self.current_range or self._target.mass <= 0:
+        if target_dist > self.range or self._target.mass <= 0:
             self.clear_target()
         return self._target
 
@@ -60,10 +63,10 @@ class MiningLaser(PoweredComponent):
 
     def set_target(self, target):
         target_dist = get_distance(
-            self._target.position,
+            target.position,
             self.attached_body.position
         )
-        if target_dist < self.current_range and self._target.mass > 0:
+        if target_dist < self.range and target.mass > 0:
             self._target = target
 
     def perform_tick(self):

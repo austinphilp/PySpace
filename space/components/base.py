@@ -8,7 +8,10 @@ from space.utils.sanitization import sanitize_throttle
 class BaseComponent(ABC, IdentityMixin):
     def __init__(self, *args, **kwargs):
         self._integrity = 1.0
-        self.attached_body = kwargs.get('attached_body')
+        try:
+            self.attached_body = kwargs.get('attached_body')
+        except AttributeError:
+            pass
         self.attached_panel = kwargs.get('attached_panel')
 
     @property

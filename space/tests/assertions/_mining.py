@@ -3,17 +3,17 @@ from space.components import Reactor, MiningLaser
 from space.ship import ShipPanel, Ship
 
 
-def _get_mining_lasers_for_assertion(mining_range, mining_rate, has_power):
+def _get_mining_lasers_for_assertion(mining_range, mining_rate, **kwargs):
     reactor = Reactor(max_output=200)
     ship = Ship(
         forward_panel=ShipPanel(
             side="forward",
-            mining_lasers=MiningLaser(
+            mining_lasers=[MiningLaser(
                 base_range=mining_range,
-                mining_rate=mining_rate
-            )
+                mine_rate=mining_rate
+            )]
         ),
-        reactors=[reactor] if has_power else []
+        reactors=[reactor] if kwargs.get('has_power', True) else []
     )
     return [
         laser for panel in ship.panels.values()
@@ -39,7 +39,11 @@ def _assert_can_mine(target_pos, target_mass, *args, **kwargs):
     target = Asteroid(position=target_pos, mass=target_mass)
     laser = _get_mining_lasers_for_assertion(*args, **kwargs)[0]
     laser.set_target(target)
-    laser.perform_tick(target)
     old_mass = target.mass
-    assert old_mass == old_mass - laser.mining_rate
-    assert laser.attached_body.storage == laser.mining_rate
+    laser.perform_tick()
+    if kwargs.get('expect_failure', False) is False:
+        assert target.mass == old_mass - laser.mine_rate
+        assert laser.attached_body.storage == laser.mine_rate
+    else:
+        assert target.mass == old_mass
+        assert laser.attached_body.storage == 0
