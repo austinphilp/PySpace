@@ -14,12 +14,19 @@ class System(object):
             body.system = self
         self._near_object_map = CacheMap(expiry=20)
 
+    def add_body(self, body):
+        if isinstance(body, Ship):
+            self.ships.append(body)
+        if isinstance(body, Ship):
+            self.inert_bodies.append(body)
+
     @property
     def bodies(self):
         return self.ships + self.inert_bodies
 
     def time(self):
         return self.clock.time()
+
 
     def perform_tick(self):
         # print("Executing tick")

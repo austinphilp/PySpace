@@ -1,5 +1,5 @@
 from space.body import Body
-from space.constants.directions import DIRECTIONS
+from space.constants.directions import DIRECTIONS, COUNTER_DIRECTIONS
 from space.constants.math import DEGREES
 from space.mixins import IdentityMixin, OrientationMixin
 from space.utils.vectors import rotate_vector
@@ -90,6 +90,11 @@ class Ship(Body, OrientationMixin, IdentityMixin):
     def sensors(self):
         return [sensor for panel in self.panels.values()
                 for sensor in panel.sensors]
+
+    @property
+    def mining_lasers(self):
+        return [laser for panel in self.panels.values()
+                for laser in panel.mining_lasers]
 
     @property
     def thrusters(self):
@@ -206,3 +211,37 @@ class Ship(Body, OrientationMixin, IdentityMixin):
             if thruster.is_active:
                 self.current_vector += thruster.acceleration_vector
                 thruster.apply_degredation()
+
+    @classmethod
+    def from_dict(cls, data):
+        from space.components import (
+            MiningLaser,
+            Reactor,
+            ReactionWheel,
+            Thruster,
+            Sensor
+        )
+        reactors = [Reactor(**reactor) for reactor in data.get('reactors', [])]
+        reaction_wheels = [
+            ReactionWheel(**rw)
+            for rw in data.get('reaction_wheels', [])
+        ]
+        ship_panels = [
+            ShipPanel(
+                side=side,
+                thrusters=[
+                    Thruster(**thruster)
+                    for thruster in panel.get('thrusters', [])],
+                sensors=[
+                    Sensor(**sensor) for sensor in panel.get('sensors', [])],
+                mining_lasers=[
+                    MiningLaser(**laser) for laser in panel.get('lasers', [])]
+            )
+            for side, panel in data.get('panels', {}).items()
+        ]
+        return cls(
+            reactors=reactors,
+            reaction_wheels=reaction_wheels,
+            **{F"{COUNTER_DIRECTIONS[panel.side]}_panel": panel
+                for panel in ship_panels}
+        )

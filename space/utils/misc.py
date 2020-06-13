@@ -1,3 +1,15 @@
+class BuildQueue(object):
+    def __init__(self, cls, *args, **kwargs):
+        self._cls = cls
+        self._build_args = args
+        self._build_kwargs = kwargs
+
+    def build(self, system):
+        return system.add_body(
+            self._cls(*self._build_args, **self._build_kwargs)
+        )
+
+
 class ExpirableAttribute(object):
     def __init__(self, expires_in=3):
         self.expires_in = expires_in
