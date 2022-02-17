@@ -103,6 +103,7 @@ class CommandServer(Thread):
             + payload
         )
         await writer.drain()
+        sdf s 
         writer.close()
 
 
